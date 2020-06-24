@@ -6,9 +6,8 @@ requiredPackages = [#should only contain third party pakages
     "scipy",
     "PYPOWER",
     "matplotlib",
-    "pulp",
-    "pyomo",
-    "ipython"
+    "ipython",
+    "requests"
 ],
 
 setup(

@@ -17,3 +17,6 @@ csv_files/*.csv
 *.ipynb_checkpoints/
 csv_files/results/
 plots/
+powerflow/powerflow
+centralized/covee
+

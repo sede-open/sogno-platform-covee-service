@@ -1,0 +1,29 @@
+version: '3.3'
+
+services:
+  # grafana:
+  #   image: grafana/grafana
+  #   ports:
+  #     - 3000:3000
+  #   environment:
+  #     - "GF_INSTALL_PLUGINS=grafana-clock-panel,grafana-simple-json-datasource"
+  powerflow:
+    build:
+      context: '.'
+      dockerfile: './powerflow.Dockerfile'
+    volumes:
+      - ./powerflow:/powerflow
+    # command: tail -F dfsdfödslk
+    command: bash -c "  /powerflow/powerflow/bin/python3 /powerflow/runPF.py --ext_port 7070"
+    ports:
+      - 7070:8000
+  centralized:
+    build:
+      context: '.'
+      dockerfile: './centralized.Dockerfile'
+    volumes:
+      - ./centralized:/centralized
+    # command: tail -F dfsdfödslk
+    command: bash -c "  /centralized/covee/bin/python3 /centralized/json_mess.py --ext_port 7071"
+    ports:
+      - 7071:8000
