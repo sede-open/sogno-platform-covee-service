@@ -60,9 +60,12 @@ simDict = {
 }
 
 voltage_dict = {}
+active_power_dict = {}
+
 # add the simulation dictionary to mmu object
 dmuObj.addElm("simDict", simDict)
 dmuObj.addElm("voltage_dict", voltage_dict)
+dmuObj.addElm("active_power_dict", active_power_dict)
 
 ########################################################################################################
 #########################  Section for Receiving Signal  ###############################################
@@ -71,8 +74,6 @@ dmuObj.addElm("voltage_dict", voltage_dict)
 def voltage_input(data,  *args):
     voltage_dict = {}  
     dmuObj.setDataSubset(data,"voltage_dict")
-    logging.debug("voltage received")
-    logging.debug(data)
 
 def api_cntr_input(data,  *args):
     
@@ -89,11 +90,48 @@ dmuObj.addRx(api_cntr_input, "nodes", "data_nodes")
 dmuObj.addElm("voltage", simDict)
 dmuObj.addRx(voltage_input, "voltage", "voltage_node")
 
+########################################################################################################
+#########################  Section for Sending Signal  #################################################
+########################################################################################################
+
+def control_output(data, *args):
+
+    reqData = {}
+    reqData["data"] =  data
+    logging.debug("##DATA##")
+    logging.debug(data)
+    headers = {'content-type': 'application/json'}
+    try:
+        jsonData = (json.dumps(reqData)).encode("utf-8")
+    except:
+        logging.warn("Malformed json")
+    for key in data.keys():
+        if key == "active_power":
+            result = requests.post("http://powerflow:8000/set/active_power/active_power_control/", data=jsonData, headers=headers)
+
+dmuObj.addRx(control_output,"active_power_dict")
+
+
 try:
     while True:
+        active_power_dict = {}
         voltage_value = dmuObj.getDataSubset("voltage_dict")
-        
+        voltage_meas = voltage_value.get("voltage_measurements", None)
+        logging.debug("voltage received")
+        logging.debug(voltage_meas)
+
+        if voltage_value:
+            active_power = [1.0]*len(list(voltage_meas.values()))            
+            k = 0
+            for key in voltage_meas.keys():
+                active_power_dict[key] = active_power[k]
+                k+=1
+            dmuObj.setDataSubset({"active_power":active_power_dict},"active_power_dict")
+        else:
+            pass
+
         time.sleep(1.0)
+
 except (KeyboardInterrupt, SystemExit):
     print('simulation finished')
 

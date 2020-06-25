@@ -48,8 +48,7 @@ def initialize( name, profiles):
     pvproduction = profiles[0]
     demandprofile_P = profiles[1]
 
-def run_Power_Flow(ppc, active_nodes):
-
+def run_Power_Flow(ppc, active_nodes, active_power):
     ppc = ext2int(ppc)      # convert to continuous indexing starting from 0
     BUS_TYPE = 1
 
@@ -90,7 +89,7 @@ def run_Power_Flow(ppc, active_nodes):
 
     for i in range(int(len(c))):
         gen[i+1][QG] = 0.0#q[i]
-        gen[i+1][PG] = 1.0 #+ p_PV[i]
+        gen[i+1][PG] = active_power[i] #+ p_PV[i]
 
     ppc['bus'] = bus
     ppc['gen'] = gen
@@ -135,27 +134,25 @@ dict_ext_cntr = {
 
 simDict = {
     "active_nodes" : [],
-    "output_voltage": []
+    "output_voltage": [],
+    "active_power_control": []
 }
 
 voltage_dict = {}
+active_power_control_dict = {}
 
 # add the simulation dictionary to mmu object
 dmuObj.addElm("simDict", simDict)
 dmuObj.addElm("voltage_dict", voltage_dict)
-
+dmuObj.addElm("active_power_control_dict", active_power_control_dict)
 
 ########################################################################################################
 #########################  Section for Receiving Signal  ###############################################
 ########################################################################################################
 
-def ext_cntr_input(data,  *args):
-    
-    tmpData = []
-    for key in data.keys():
-        value = data[key][0]
-        tmpData.append(value)        
-        dmuObj.setDataSubset(value,"dataDict", key)
+def active_power_control_input(data,  *args):
+    active_power_control_dict = {}  
+    dmuObj.setDataSubset(data,"active_power_control_dict")
 
 def api_cntr_input(data,  *args):
     
@@ -167,6 +164,10 @@ def api_cntr_input(data,  *args):
 # Receive from external Control
 dmuObj.addElm("nodes", dict_ext_cntr)
 dmuObj.addRx(api_cntr_input, "nodes", "data_nodes")
+
+# Receive active power control
+dmuObj.addElm("active_power", simDict)
+dmuObj.addRx(active_power_control_input, "active_power", "active_power_control")
 
 ########################################################################################################
 #########################  Section for Sending Signal  #################################################
@@ -212,15 +213,22 @@ try:
         logging.debug("active nodes")
         logging.debug(active_nodes)
 
-        [v_gen,p,c] = run_Power_Flow(ppc,active_nodes)
+        active_power_value = dmuObj.getDataSubset("active_power_control_dict")
+        active_power = active_power_value.get("active_power", None)
+        if not active_power:
+            p_value = [1.0] * len(active_nodes)
+        else:
+            p_value = list(active_power.values())
+
+        [v_gen,p,c] = run_Power_Flow(ppc,active_nodes,p_value)
         # logging.debug("v_gen, p, c")
         # logging.debug([v_gen,p,c])
                
         for i in range(len(c)):
-            voltage_dict["output_voltage_node_"+str(active_nodes[i])] = v_gen[i]
-        dmuObj.setDataSubset(voltage_dict,"voltage_dict")
-
+            voltage_dict["node_"+str(active_nodes[i])] = v_gen[i]
+        dmuObj.setDataSubset({"voltage_measurements": voltage_dict},"voltage_dict")
 
         time.sleep(1.0)
+
 except (KeyboardInterrupt, SystemExit):
     print('simulation finished')

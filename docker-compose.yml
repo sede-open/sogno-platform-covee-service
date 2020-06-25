@@ -13,8 +13,8 @@ services:
       dockerfile: './powerflow.Dockerfile'
     volumes:
       - ./powerflow:/powerflow
-    # command: tail -F dfsdfödslk
-    command: bash -c "  /powerflow/powerflow/bin/python3 /powerflow/runPF.py --ext_port 7070"
+    command: tail -F dfsdfödslk
+    # command: bash -c "  /powerflow/powerflow/bin/python3 /powerflow/runPF.py --ext_port 7070"
     ports:
       - 7070:8000
   centralized:
@@ -23,7 +23,7 @@ services:
       dockerfile: './centralized.Dockerfile'
     volumes:
       - ./centralized:/centralized
-    # command: tail -F dfsdfödslk
-    command: bash -c "  /centralized/covee/bin/python3 /centralized/json_mess.py --ext_port 7071"
+    command: tail -F dfsdfödslk
+    # command: bash -c "  /centralized/covee/bin/python3 /centralized/json_mess.py --ext_port 7071"
     ports:
       - 7071:8000
