@@ -60,7 +60,7 @@ class algorithms:
             bus_i.append(bus[j][BUS_I])
 
         diff = list(set(bus_i)-set(c))
-        # print(diff)
+        diff = [int(i) for i in diff]
 
         Xgg = np.delete(Xgg, diff, axis=0)
         Xgg = np.delete(Xgg, diff, axis=1)

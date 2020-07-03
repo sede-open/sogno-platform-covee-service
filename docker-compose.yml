@@ -17,7 +17,7 @@ services:
     # command: bash -c "  /powerflow/powerflow/bin/python3 /powerflow/runPF.py --ext_port 7070"
     ports:
       - 7070:8000
-  centralized:
+  pv_centralized:
     build:
       context: '.'
       dockerfile: './centralized.Dockerfile'

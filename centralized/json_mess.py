@@ -11,6 +11,12 @@ import requests
 import json
 import csv
 import argparse
+from pypower.api import *
+from pypower.ext2int import ext2int
+#import git
+
+from control_strategies.Quadratic_Control_PV import Quadratic_Control_PV
+from cases.case_10_nodes import case_10_nodes
 
 
 parser = argparse.ArgumentParser()
@@ -18,6 +24,31 @@ parser.add_argument('--ext_port', nargs='*', required=True)
 args = vars(parser.parse_args())
 ext_port = args['ext_port'][0]
 
+
+def system_info(ppc):
+    # Gather information about the system
+    # =============================================================
+    baseMVA, bus, gen, branch, cost, VMAX, VMIN = \
+        ppc["baseMVA"], ppc["bus"], ppc["gen"], ppc["branch"], ppc["gencost"], ppc["VMAX"], ppc["VMIN"]
+
+    nb = bus.shape[0]                        # number of buses
+    ng = gen.shape[0]                        # number of generators
+    nbr = branch.shape[0]                    # number of branches
+
+    for i in range(int(nb)):
+        if bus[i][BUS_TYPE] == 3.0:
+            pcc = i
+        else:
+            pass
+
+    grid_data = {"baseMVA":baseMVA,"branch":branch,"pcc":pcc,"bus":bus,"gen":gen,"nb":nb,"ng":ng,"nbr":nbr}
+
+    return grid_data
+
+ppc = case_10_nodes()
+ppc = ext2int(ppc)      # convert to continuous indexing starting from 0
+BUS_TYPE = 1
+grid_data = system_info(ppc)
 
 coloredlogs.install(level='DEBUG',
 fmt='%(asctime)s %(levelname)-8s %(name)s[%(process)d] %(message)s',
@@ -56,16 +87,21 @@ dict_ext_cntr = {
 
 simDict = {
     "active_nodes" : [],
-    "voltage_node" : []
+    "voltage_node" : [],
+    "pv_input_node" : []
 }
 
 voltage_dict = {}
 active_power_dict = {}
+reactive_power_dict = {}
+pv_input_dict = {}
 
 # add the simulation dictionary to mmu object
 dmuObj.addElm("simDict", simDict)
 dmuObj.addElm("voltage_dict", voltage_dict)
 dmuObj.addElm("active_power_dict", active_power_dict)
+dmuObj.addElm("reactive_power_dict", reactive_power_dict)
+dmuObj.addElm("pv_input_dict", pv_input_dict)
 
 ########################################################################################################
 #########################  Section for Receiving Signal  ###############################################
@@ -74,6 +110,10 @@ dmuObj.addElm("active_power_dict", active_power_dict)
 def voltage_input(data,  *args):
     voltage_dict = {}  
     dmuObj.setDataSubset(data,"voltage_dict")
+def pv_input(data,  *args):
+    pv_input_dict = {}  
+    dmuObj.setDataSubset(data,"pv_input_dict")
+
 
 def api_cntr_input(data,  *args):
     
@@ -85,10 +125,12 @@ def api_cntr_input(data,  *args):
 # Receive from external Control
 dmuObj.addElm("nodes", dict_ext_cntr)
 dmuObj.addRx(api_cntr_input, "nodes", "data_nodes")
-
 # Receive voltage
 dmuObj.addElm("voltage", simDict)
 dmuObj.addRx(voltage_input, "voltage", "voltage_node")
+# Receive pv_input
+dmuObj.addElm("pv_input", simDict)
+dmuObj.addRx(pv_input, "pv_input", "pv_input_node")
 
 ########################################################################################################
 #########################  Section for Sending Signal  #################################################
@@ -105,28 +147,57 @@ def control_output(data, *args):
         jsonData = (json.dumps(reqData)).encode("utf-8")
     except:
         logging.warn("Malformed json")
-    for key in data.keys():
-        if key == "active_power":
-            result = requests.post("http://powerflow:8000/set/active_power/active_power_control/", data=jsonData, headers=headers)
+    try:
+        for key in data.keys():
+            if key == "active_power":
+                result = requests.post("http://powerflow:8000/set/active_power/active_power_control/", data=jsonData, headers=headers)
+            if key == "reactive_power":
+                result = requests.post("http://powerflow:8000/set/reactive_power/reactive_power_control/", data=jsonData, headers=headers)
+    except:
+        logging.warn("No connection to Powerflow")
 
 dmuObj.addRx(control_output,"active_power_dict")
+dmuObj.addRx(control_output,"reactive_power_dict")
 
 
 try:
     while True:
         active_power_dict = {}
+        reactive_power_dict = {}
         voltage_value = dmuObj.getDataSubset("voltage_dict")
         voltage_meas = voltage_value.get("voltage_measurements", None)
-        logging.debug("voltage received")
-        logging.debug(voltage_meas)
 
-        if voltage_value:
-            active_power = [1.0]*len(list(voltage_meas.values()))            
+        pv_input_value = dmuObj.getDataSubset("pv_input_dict")
+        pv_input_meas = pv_input_value.get("pv_input_measurements", None)
+        logging.debug("pv input received")
+        logging.debug(pv_input_meas)
+
+        if voltage_value and pv_input_meas:
+            pv_nodes = list(map(lambda x: x.replace('node_',''),list(voltage_meas.keys())))
+            num_pv = len(list(voltage_meas.values()))
+            pv_nodes = [float(i)-1 for i in pv_nodes]
+
+            if not reactive_power_dict:
+                reactive_power = [0.0]*num_pv
+            else:
+                pass
+
+            v_gen = list(voltage_meas.values())
+            pv_input = list(pv_input_meas.values())
+
+            control = Quadratic_Control_PV(grid_data, pv_nodes)
+            control.initialize_control()
+            reactive_power = control.control_(pv_input, reactive_power, v_gen)
+
+            active_power = [1.0]*num_pv
             k = 0
             for key in voltage_meas.keys():
                 active_power_dict[key] = active_power[k]
+                reactive_power_dict[key] = reactive_power[k]
                 k+=1
+
             dmuObj.setDataSubset({"active_power":active_power_dict},"active_power_dict")
+            dmuObj.setDataSubset({"reactive_power":reactive_power_dict},"reactive_power_dict")
         else:
             pass
 

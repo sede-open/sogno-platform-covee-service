@@ -5,7 +5,7 @@ from .algorithms.algorithms import algorithms
 
 class Quadratic_Reactive_Power:
 
-    def __init__(self, grid_data):
+    def __init__(self, grid_data, num_pv):
         # Input Data
         # =============================================================
         '''
@@ -19,23 +19,19 @@ class Quadratic_Reactive_Power:
         data 7 : c
 
         '''
-        self.bus = grid_data[0]
-        self.baseMVA = grid_data[1]
-        self.branch = grid_data[2]
-        self.pcc = grid_data[3]
-        self.nb = grid_data[4]
-        self.ng = grid_data[5]
-        self.nbr = grid_data[6]
-        self.c = grid_data[7]
-
+        self.bus = grid_data["bus"]
+        self.baseMVA = grid_data["baseMVA"]
+        self.branch = grid_data["branch"]
+        self.pcc = grid_data["pcc"]
+        self.nb = grid_data["nb"]
+        self.ng = grid_data["ng"]
+        self.nbr = grid_data["nbr"]
+        self.c = num_pv#grid_data[7]
 
         # Problem parameters
         # =============================================================
-        self.V_MIN = 0.9  # undervoltage limit
+        self.V_MIN = 0.95  # undervoltage limit
         self.V_MAX = 1.05 # overvoltage limit
-
-        self.V_MIN2 = 0.95  # undervoltage limit 2
-        self.V_MAX2 = 1.05  # overvoltage limit 2
 
         self.q = [0.0] * int(len(self.c))
 
@@ -71,17 +67,18 @@ class Quadratic_Reactive_Power:
         return self.q, self.alpha, self.mu_min
 
 
-    def Voltage_Control(self, k, pv_production, reactive_power, v_gen, alpha):
+    def Voltage_Control(self, pv_production, reactive_power, v_gen, alpha):
         self.pvproduction = pv_production
         self.q = reactive_power
         self.v_gen = v_gen
         self.alpha = alpha
+        print("pv production", pv_production)
 
         # DEFINE LIM (DYNAMIC)
         # =============================================================
         for i in range(int(len(self.c))):
-            self.QMIN[i] = -0.312*(self.pvproduction[k][i]+1e-2)   # 40% of the available power
-            self.QMAX[i] = 0.312*(self.pvproduction[k][i]+1e-2)    # 40% of the available power
+            self.QMIN[i] = -0.312*(self.pvproduction[i]+1e-2)   # 40% of the available power
+            self.QMAX[i] = 0.312*(self.pvproduction[i]+1e-2)    # 40% of the available power
             # self.QMIN = [-1.0,-0.2]                         # BOLOGNANI TEST
             # self.QMAX = [1.0,0.2]                           # BOLOGNANI TEST
            
