@@ -3,8 +3,8 @@ SHELL := /bin/bash
 init:
 	python3 ./setup/createEnv.py -y
 	source powerflow/bin/activate -y && \
-	pip install --upgrade pip -y && \
-	pip install -r ./setup/requirements.txt -y
+	pip install --upgrade pip && \
+	pip install -r ./setup/requirements.txt
 clean:
 	rm -R -f powerflow
 	rm -R -f __pycache__

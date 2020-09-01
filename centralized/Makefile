@@ -4,7 +4,7 @@ init:
 	python3 ./setup/createEnv.py -y
 	source covee/bin/activate -y && \
 	pip install --upgrade pip && \
-	pip install -r ./setup/requirements.txt -y
+	pip install -r ./setup/requirements.txt
 clean:
 	rm -R -f covee
 	rm -R -f __pycache__
