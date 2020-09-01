@@ -19,4 +19,5 @@ csv_files/results/
 plots/
 powerflow/powerflow
 centralized/covee
+venv_ext
 

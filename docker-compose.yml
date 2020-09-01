@@ -13,9 +13,9 @@ services:
       dockerfile: './powerflow.Dockerfile'
     volumes:
       - ./powerflow:/powerflow
-    command: bash -c " sudo apt-get install python3-venv -y"
-    command: bash -c "  cd powerflow"
-    command: bash -c "  make init"
+    # command: bash -c "sudo apt-get install python3-venv -y"
+    command: "cd powerflow"
+    command: bash -c "make init"
     # command: tail -F dfsdfödslk
     command: bash -c "  /powerflow/powerflow/bin/python3 /powerflow/runPF.py --ext_port 7070"
     ports:
@@ -26,8 +26,9 @@ services:
       dockerfile: './centralized.Dockerfile'
     volumes:
       - ./centralized:/centralized
-    command: bash -c " sudo apt-get install python3-venv"
-    command: bash -c "  make init -C /centralized/Makefile"
+    # command: bash -c "sudo apt-get install python3-venv -y"
+    command: bash .c "centralized" 
+    command: bash -c "make init"
     # command: tail -F dfsdfödslk
     command: bash -c "  /centralized/covee/bin/python3 /centralized/json_mess.py --ext_port 7071"
     ports:

@@ -5,6 +5,7 @@ RUN apt-get update -y \
     && apt-get upgrade -y \ 
     && apt-get install build-essential -y \
     && apt install python3-pip -y  \
+    && apt-get install python3-venv -y \
     && apt-get install sudo -y 
 
 # ENV VIRTUAL_ENV=/opt/venv
