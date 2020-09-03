@@ -96,12 +96,15 @@ active_power_dict = {}
 reactive_power_dict = {}
 pv_input_dict = {}
 
+grafana_dict = {}
+
 # add the simulation dictionary to mmu object
 dmuObj.addElm("simDict", simDict)
 dmuObj.addElm("voltage_dict", voltage_dict)
 dmuObj.addElm("active_power_dict", active_power_dict)
 dmuObj.addElm("reactive_power_dict", reactive_power_dict)
 dmuObj.addElm("pv_input_dict", pv_input_dict)
+dmuObj.addElm("grafana_dict", grafana_dict)
 
 ########################################################################################################
 #########################  Section for Receiving Signal  ###############################################
@@ -141,7 +144,7 @@ def control_output(data, *args):
     reqData = {}
     reqData["data"] =  data
     logging.debug("##DATA##")
-    logging.debug(data)
+    # logging.debug(data)
     headers = {'content-type': 'application/json'}
     try:
         jsonData = (json.dumps(reqData)).encode("utf-8")
@@ -159,6 +162,17 @@ def control_output(data, *args):
 dmuObj.addRx(control_output,"active_power_dict")
 dmuObj.addRx(control_output,"reactive_power_dict")
 
+########################################################################################################
+#########################  Section for Grafana  ###############################################
+########################################################################################################
+
+def listChanged(data, name, handle):
+    reqData = {}
+    reqData["data"] =  data
+    logging.debug("Grafana Data")
+    logging.debug(data)
+
+dmuObj.addRx(listChanged,"grafana_dict")
 
 try:
     while True:
@@ -198,6 +212,9 @@ try:
 
             dmuObj.setDataSubset({"active_power":active_power_dict},"active_power_dict")
             dmuObj.setDataSubset({"reactive_power":reactive_power_dict},"reactive_power_dict")
+            
+            ts = time.time()*1000
+            dmuObj.setDataSubset([100,ts],"grafana_dict")
         else:
             pass
 
