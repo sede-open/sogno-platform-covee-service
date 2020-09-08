@@ -72,6 +72,7 @@ httpSrvThread1.start()
 
 httpSrvThread2 = threading.Thread(name='httpSrv',target=httpSrv, args=("0.0.0.0", int(ext_port) ,dmuObj,))
 httpSrvThread2.start()
+
 time.sleep(2.0)
 #######################################################################################################
 
@@ -96,15 +97,12 @@ active_power_dict = {}
 reactive_power_dict = {}
 pv_input_dict = {}
 
-grafana_dict = {}
-
 # add the simulation dictionary to mmu object
 dmuObj.addElm("simDict", simDict)
 dmuObj.addElm("voltage_dict", voltage_dict)
 dmuObj.addElm("active_power_dict", active_power_dict)
 dmuObj.addElm("reactive_power_dict", reactive_power_dict)
 dmuObj.addElm("pv_input_dict", pv_input_dict)
-dmuObj.addElm("grafana_dict", grafana_dict)
 
 ########################################################################################################
 #########################  Section for Receiving Signal  ###############################################
@@ -163,16 +161,17 @@ dmuObj.addRx(control_output,"active_power_dict")
 dmuObj.addRx(control_output,"reactive_power_dict")
 
 ########################################################################################################
-#########################  Section for Grafana  ###############################################
+#########################  Section for Posting Signal (for Grafana) ####################################
 ########################################################################################################
+grafanaArrayPos = 0
+dataDict = []
+for i in range(1000):
+    dataDict.extend([[0,0]])
 
-def listChanged(data, name, handle):
-    reqData = {}
-    reqData["data"] =  data
-    logging.debug("Grafana Data")
-    logging.debug(data)
+for i in range(grid_data["nb"]+1):
+    dmuObj.addElm("grafana voltage node_"+str(i), dataDict)
+    dmuObj.addElm("grafana reactive power node_"+str(i), dataDict)
 
-dmuObj.addRx(listChanged,"grafana_dict")
 
 try:
     while True:
@@ -187,6 +186,8 @@ try:
         logging.debug(pv_input_meas)
 
         if voltage_value and pv_input_meas:
+            ts = time.time()*1000   # time in milliseconds
+
             pv_nodes = list(map(lambda x: x.replace('node_',''),list(voltage_meas.keys())))
             num_pv = len(list(voltage_meas.values()))
             pv_nodes = [float(i)-1 for i in pv_nodes]
@@ -206,15 +207,24 @@ try:
             active_power = [1.0]*num_pv
             k = 0
             for key in voltage_meas.keys():
+                #updating dictionaries
                 active_power_dict[key] = active_power[k]
                 reactive_power_dict[key] = reactive_power[k]
+
                 k+=1
 
             dmuObj.setDataSubset({"active_power":active_power_dict},"active_power_dict")
             dmuObj.setDataSubset({"reactive_power":reactive_power_dict},"reactive_power_dict")
             
-            ts = time.time()*1000
-            dmuObj.setDataSubset([100,ts],"grafana_dict")
+            for key in voltage_meas.keys():
+                sim_list = [voltage_meas[key],ts]
+                dmuObj.setDataSubset(sim_list,"grafana voltage "+key,grafanaArrayPos)
+                sim_list2= [reactive_power_dict[key],ts]
+                dmuObj.setDataSubset(sim_list2,"grafana reactive power "+key,grafanaArrayPos)
+
+            grafanaArrayPos = grafanaArrayPos+1
+            if grafanaArrayPos>1000:
+                grafanaArrayPos = 0
         else:
             pass
 
