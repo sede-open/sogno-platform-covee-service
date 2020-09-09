@@ -13,7 +13,7 @@ The submodule installed is the "dmu", a tool to REST API
 
 ### There are three containers:
 - pv_centralized: Run the voltage control
-- powerflow:  Run the powerflow (simulation of the electrical grid)
+- powerflow: Run the powerflow (simulation of the electrical grid)
 - grafana (optional):  For the visualization
 
 
