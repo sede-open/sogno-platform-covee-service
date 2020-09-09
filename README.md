@@ -3,8 +3,8 @@
 
 
 ## Download the respository
-please clone it with: git clone --recursive <ssh-link>  (to download the submodules) 
-The submodule installed in the "dmu", a tool to REST API
+please clone it with: git clone --recursive <ssh-link>  (to download the submodules) \\
+The submodule installed is the "dmu", a tool to REST API
 
 ## Installation
 
