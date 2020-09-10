@@ -5,7 +5,7 @@ from pypower.idx_bus import BUS_TYPE, REF, PD, QD, VM, VA, VMAX, VMIN
 from pypower.idx_gen import GEN_BUS, PG, QG, PMAX, PMIN, QMAX, QMIN, VG
 from pypower.int2ext import int2ext
 
-from cases.case_10_nodes import case_10_nodes
+from cases.LV_SOGNO import LV_SOGNO as case
 from csv_files.read_profiles import read_profiles
 
 import numpy as np
@@ -188,7 +188,7 @@ def measurement_output(data, *args):
     reqData = {}
     reqData["data"] =  data
     # logging.debug("voltage sent")
-    logging.debug(data)
+    # logging.debug(data)
 
     headers = {'content-type': 'application/json'}
     try:
@@ -215,12 +215,16 @@ dmuObj.addRx(measurement_output,"pv_input_dict")
 profiles = read_profiles()
 [PV_list, P_load_list] = profiles.read_csv()
 
-ppc = case_10_nodes()
+ppc = case()
 initialize(ppc, [PV_list, P_load_list])
 k=0
 try:
     while True:
+        
+        # intialize the dictionaries
         voltage_dict = {}
+        pv_input_dict = {}
+        
         active_nodes = dmuObj.getDataSubset("simDict","active_nodes")
         if not active_nodes:
             logging.debug("no input received")
@@ -249,13 +253,16 @@ try:
         # logging.debug([v_gen,p,c])
       
         for i in range(len(c)):
-            voltage_dict["node_"+str(active_nodes[i])] = v_gen[i]
-            pv_input_dict["node_"+str(active_nodes[i])] = PV_list[k][i]
+            voltage_dict["node_"+str(int(active_nodes[i]))] = v_gen[i]
+            pv_input_dict["node_"+str(int(active_nodes[i]))] = PV_list[k][i]
         dmuObj.setDataSubset({"voltage_measurements": voltage_dict},"voltage_dict")
         dmuObj.setDataSubset({"pv_input_measurements": pv_input_dict},"pv_input_dict")
+        
+        logging.debug("pv input dict")
+        logging.debug(pv_input_dict)
 
         time.sleep(1.0)
-        k = min(k+1,300)
+        k = min(k+1,3000)
         print(k)
 
 except (KeyboardInterrupt, SystemExit):

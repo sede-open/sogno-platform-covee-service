@@ -16,7 +16,7 @@ from pypower.ext2int import ext2int
 #import git
 
 from control_strategies.Quadratic_Control_PV import Quadratic_Control_PV
-from cases.case_10_nodes import case_10_nodes
+from cases.LV_SOGNO import LV_SOGNO as case
 
 
 parser = argparse.ArgumentParser()
@@ -45,7 +45,7 @@ def system_info(ppc):
 
     return grid_data
 
-ppc = case_10_nodes()
+ppc = case()
 ppc = ext2int(ppc)      # convert to continuous indexing starting from 0
 BUS_TYPE = 1
 grid_data = system_info(ppc)
@@ -179,11 +179,11 @@ try:
         reactive_power_dict = {}
         voltage_value = dmuObj.getDataSubset("voltage_dict")
         voltage_meas = voltage_value.get("voltage_measurements", None)
+        logging.debug("voltage_measurements")
+        logging.debug(voltage_meas)
 
         pv_input_value = dmuObj.getDataSubset("pv_input_dict")
         pv_input_meas = pv_input_value.get("pv_input_measurements", None)
-        logging.debug("pv input received")
-        logging.debug(pv_input_meas)
 
         if voltage_value and pv_input_meas:
             ts = time.time()*1000   # time in milliseconds
