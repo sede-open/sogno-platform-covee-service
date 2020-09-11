@@ -53,14 +53,12 @@ class algorithms_controllable_loads:
         bus_i = []
         for j in range(nb):
             bus_i.append(bus[j][BUS_I])
-        # print("Xgg pre", np.shape(Xgg))
 
         diff = list(set(bus_i)-set(n_battery))
-        # print("diff", diff)
+        diff = [int(i) for i in diff]
 
         Xgg = np.delete(Xgg, diff, axis=0)
         Xgg = np.delete(Xgg, diff, axis=1)
-        # print("Xgg post", np.shape(Xgg))
 
         G = np.linalg.inv((np.matrix(np.real(Xgg))))
         # print("G",(G))

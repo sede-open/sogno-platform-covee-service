@@ -84,7 +84,7 @@ def run_Power_Flow(ppc, active_nodes, active_power,reactive_power,pv_profile):
 
     ############## SET THE ACTUAL LOAD AND GEN VALUES ###############-+
     for i in range(int(nb)-1):
-        bus[i][PD] = 0.3 #- p_batt_array[i]
+        bus[i][PD] = 0.3 
         bus[i][QD] = 0.0
 
     for i in range(int(len(c))):
@@ -257,9 +257,9 @@ try:
             pv_input_dict["node_"+str(int(active_nodes[i]))] = PV_list[k][i]
         dmuObj.setDataSubset({"voltage_measurements": voltage_dict},"voltage_dict")
         dmuObj.setDataSubset({"pv_input_measurements": pv_input_dict},"pv_input_dict")
-        
-        logging.debug("pv input dict")
-        logging.debug(pv_input_dict)
+
+        logging.debug(active_power_value)        
+        logging.debug(reactive_power_value)
 
         time.sleep(1.0)
         k = min(k+1,3000)

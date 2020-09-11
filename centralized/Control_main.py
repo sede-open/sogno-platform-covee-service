@@ -171,7 +171,7 @@ for i in range(1000):
 for i in range(grid_data["nb"]+1):
     dmuObj.addElm("grafana voltage node_"+str(i), dataDict)
     dmuObj.addElm("grafana reactive power node_"+str(i), dataDict)
-
+    dmuObj.addElm("grafana active power node_"+str(i), dataDict)
 
 try:
     while True:
@@ -196,15 +196,19 @@ try:
                 reactive_power = [0.0]*num_pv
             else:
                 pass
+            if not active_power_dict:
+                active_power = [0.0]*num_pv
+            else:
+                pass
 
             v_gen = list(voltage_meas.values())
             pv_input = list(pv_input_meas.values())
 
             control = Quadratic_Control_PV(grid_data, pv_nodes)
             control.initialize_control()
-            reactive_power = control.control_(pv_input, reactive_power, v_gen)
+            [reactive_power, active_power] = control.control_(pv_input, reactive_power, active_power, v_gen)
 
-            active_power = [1.0]*num_pv
+            # active_power = [1.0]*num_pv
             k = 0
             for key in voltage_meas.keys():
                 #updating dictionaries
@@ -215,12 +219,25 @@ try:
 
             dmuObj.setDataSubset({"active_power":active_power_dict},"active_power_dict")
             dmuObj.setDataSubset({"reactive_power":reactive_power_dict},"reactive_power_dict")
+
+            logging.debug("reactive_power")
+            logging.debug(reactive_power_dict)
             
-            for key in voltage_meas.keys():
-                sim_list = [voltage_meas[key],ts]
-                dmuObj.setDataSubset(sim_list,"grafana voltage "+key,grafanaArrayPos)
-                sim_list2= [reactive_power_dict[key],ts]
-                dmuObj.setDataSubset(sim_list2,"grafana reactive power "+key,grafanaArrayPos)
+            for i in range(grid_data["nb"]):
+                if i in pv_nodes:
+                    sim_list = [voltage_meas["node_"+str(i+1)],ts]
+                    dmuObj.setDataSubset(sim_list,"grafana voltage node_"+str(i+1),grafanaArrayPos)
+                    sim_list2= [reactive_power_dict["node_"+str(i+1)],ts]
+                    dmuObj.setDataSubset(sim_list2,"grafana reactive power node_"+str(i+1),grafanaArrayPos)
+                    sim_list3= [active_power_dict["node_"+str(i+1)],ts]
+                    dmuObj.setDataSubset(sim_list2,"grafana active power node_"+str(i+1),grafanaArrayPos)
+                else:
+                    sim_list = [0.0,ts]
+                    dmuObj.setDataSubset(sim_list,"grafana voltage node_"+str(i+1),grafanaArrayPos)
+                    sim_list2= [0.0,ts]
+                    dmuObj.setDataSubset(sim_list2,"grafana reactive power node_"+str(i+1),grafanaArrayPos)
+                    sim_list3= [0.0,ts]
+                    dmuObj.setDataSubset(sim_list2,"grafana active power node_"+str(i+1),grafanaArrayPos)
 
             grafanaArrayPos = grafanaArrayPos+1
             if grafanaArrayPos>1000:

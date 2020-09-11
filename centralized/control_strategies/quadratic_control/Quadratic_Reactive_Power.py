@@ -26,7 +26,7 @@ class Quadratic_Reactive_Power:
         self.nb = grid_data["nb"]
         self.ng = grid_data["ng"]
         self.nbr = grid_data["nbr"]
-        self.c = num_pv#grid_data[7]
+        self.c = num_pv
 
         # Problem parameters
         # =============================================================
@@ -72,7 +72,7 @@ class Quadratic_Reactive_Power:
         self.q = reactive_power
         self.v_gen = v_gen
         self.alpha = alpha
-        print("pv production", pv_production)
+        # print("pv production", pv_production)
 
         # DEFINE LIM (DYNAMIC)
         # =============================================================
