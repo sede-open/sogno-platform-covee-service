@@ -132,8 +132,8 @@ class algorithms_controllable_loads:
 
         for i in range(len(xi_min)):
             for j in range(K):
-                xi_min[i] = np.amax((xi_min[i]+gamma*(PMIN[i]-phat_pre[i]),0))
-                xi_max[i] = np.amax((xi_max[i]+gamma*(-PMAX[i]+phat_pre[i]),0))
+                xi_min[i] = np.amax((xi_min[i]*delta_t+gamma*(PMIN[i]-phat_pre[i]),0))
+                xi_max[i] = np.amax((xi_max[i]*delta_t+gamma*(-PMAX[i]+phat_pre[i]),0))
                 xi_min_tot = np.hstack([xi_min_old[0:i],xi_min[i],xi_min_old[(i+1):len(xi_min_old)]])
                 xi_max_tot = np.hstack([xi_max_old[0:i],xi_max[i],xi_max_old[(i+1):len(xi_max_old)]])
                 phat_pre[i] = (np.array((np.matrix(np.real(X))*np.matrix(G))[i,:]*np.transpose(np.matrix(lamda_min-lamda_max))).flatten()

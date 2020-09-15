@@ -215,7 +215,7 @@ try:
         else:
             pass
 
-        time.sleep(1.0)
+        time.sleep(0.5)
 
 except (KeyboardInterrupt, SystemExit):
     print('simulation finished')

@@ -287,7 +287,7 @@ try:
         else:
             q_value = list(reactive_power.values())
 
-        pv_profile_k = PV_list[k][:]#[2.0]*len(active_nodes)#
+        pv_profile_k = [2.0]*len(active_nodes)#PV_list[k][:]#
 
         [v_tot,v_gen,p,c] = run_Power_Flow(ppc,active_nodes,p_value,q_value,pv_profile_k)
         # logging.debug("v_gen, p, c")
@@ -320,7 +320,7 @@ try:
         logging.debug(active_power_value)        
         logging.debug(reactive_power_value)
 
-        time.sleep(1.0)
+        time.sleep(0.3)
         k = min(k+1,3000)
         print(k)
 
