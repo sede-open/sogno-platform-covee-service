@@ -160,19 +160,6 @@ def control_output(data, *args):
 dmuObj.addRx(control_output,"active_power_dict")
 dmuObj.addRx(control_output,"reactive_power_dict")
 
-########################################################################################################
-#########################  Section for Posting Signal (for Grafana) ####################################
-########################################################################################################
-grafanaArrayPos = 0
-dataDict = []
-for i in range(1000):
-    dataDict.extend([[0,0]])
-
-for i in range(grid_data["nb"]+1):
-    dmuObj.addElm("grafana voltage node_"+str(i), dataDict)
-    dmuObj.addElm("grafana reactive power node_"+str(i), dataDict)
-    dmuObj.addElm("grafana active power node_"+str(i), dataDict)
-
 try:
     while True:
         active_power_dict = {}
@@ -208,7 +195,7 @@ try:
             control.initialize_control()
             [reactive_power, active_power] = control.control_(pv_input, reactive_power, active_power, v_gen)
 
-            # active_power = [1.0]*num_pv
+            # active_power = [0.0]*num_pv
             k = 0
             for key in voltage_meas.keys():
                 #updating dictionaries
@@ -222,26 +209,9 @@ try:
 
             logging.debug("reactive_power")
             logging.debug(reactive_power_dict)
-            
-            for i in range(grid_data["nb"]):
-                if i in pv_nodes:
-                    sim_list = [voltage_meas["node_"+str(i+1)],ts]
-                    dmuObj.setDataSubset(sim_list,"grafana voltage node_"+str(i+1),grafanaArrayPos)
-                    sim_list2= [reactive_power_dict["node_"+str(i+1)],ts]
-                    dmuObj.setDataSubset(sim_list2,"grafana reactive power node_"+str(i+1),grafanaArrayPos)
-                    sim_list3= [active_power_dict["node_"+str(i+1)],ts]
-                    dmuObj.setDataSubset(sim_list2,"grafana active power node_"+str(i+1),grafanaArrayPos)
-                else:
-                    sim_list = [0.0,ts]
-                    dmuObj.setDataSubset(sim_list,"grafana voltage node_"+str(i+1),grafanaArrayPos)
-                    sim_list2= [0.0,ts]
-                    dmuObj.setDataSubset(sim_list2,"grafana reactive power node_"+str(i+1),grafanaArrayPos)
-                    sim_list3= [0.0,ts]
-                    dmuObj.setDataSubset(sim_list2,"grafana active power node_"+str(i+1),grafanaArrayPos)
+            logging.debug("active_power")
+            logging.debug(active_power_dict)
 
-            grafanaArrayPos = grafanaArrayPos+1
-            if grafanaArrayPos>1000:
-                grafanaArrayPos = 0
         else:
             pass
 

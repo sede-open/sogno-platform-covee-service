@@ -29,7 +29,7 @@ class Quadratic_Control_PV():
 
         # Set the parameters
         # ========================================================================
-        self.K1 = 1.0
+        self.K1 = 0.8
         for i in range(int(len(self.num_PV))):
             self.alpha[i] = self.K1*self.lim
             self.alpha_PV[i] = self.K1*self.lim

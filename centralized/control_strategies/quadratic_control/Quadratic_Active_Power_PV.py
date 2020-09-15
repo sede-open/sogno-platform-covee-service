@@ -84,7 +84,7 @@ class Quadratic_Active_Power_PV:
 
         ############# CALCULATE PV ACTIVE POWER CONTROL ########################################
         lan_multi_p = algorithms_controllable_loads(lamda_max=self.lamda_p_max, lamda_min=self.lamda_p_min, alpha=self.alpha_p, v=self.v_gen,
-                                                    VMAX=self.VMAX_PV, VMIN=self.VMIN_PV, ng=self.c,delta_t = 1.0)
+                                                    VMAX=self.VMAX_PV, VMIN=self.VMIN_PV, ng=self.c,delta_t = 0.6)
         self.lamda_p_max = lan_multi_p.network_compensation()[0]
         self.lamda_p_min = lan_multi_p.network_compensation()[1]
         p_calc = algorithms_controllable_loads(lamda=self.lamda_p_max,lamda_min=self.lamda_p_min,K=self.K,xi_min=self.xi_min,xi_max=self.xi_max,gamma=self.gamma_p,

@@ -48,6 +48,28 @@ def initialize( name, profiles):
     pvproduction = profiles[0]
     demandprofile_P = profiles[1]
 
+    ppc = ext2int(ppc)      # convert to continuous indexing starting from 0
+    BUS_TYPE = 1
+
+    # Gather information about the system
+    # =============================================================
+    baseMVA, bus, gen, branch, cost, VMAX, VMIN = \
+        ppc["baseMVA"], ppc["bus"], ppc["gen"], ppc["branch"], ppc["gencost"], ppc["VMAX"], ppc["VMIN"]
+
+    nb = bus.shape[0]                        # number of buses
+    ng = gen.shape[0]                        # number of generators
+    nbr = branch.shape[0]                    # number of branches
+
+    for i in range(int(nb)):
+        if bus[i][BUS_TYPE] == 3.0:
+            pcc = i
+        else:
+            pass     
+    
+    grid_data = {"baseMVA":baseMVA,"branch":branch,"pcc":pcc,"bus":bus,"gen":gen,"nb":nb,"ng":ng,"nbr":nbr}
+
+    return grid_data
+
 def run_Power_Flow(ppc, active_nodes, active_power,reactive_power,pv_profile):
     ppc = ext2int(ppc)      # convert to continuous indexing starting from 0
     BUS_TYPE = 1
@@ -81,6 +103,7 @@ def run_Power_Flow(ppc, active_nodes, active_power,reactive_power,pv_profile):
     q = [0.0] * int(len(c))
     p = []
     v_gen = []
+    v_tot = []
 
     ############## SET THE ACTUAL LOAD AND GEN VALUES ###############-+
     for i in range(int(nb)-1):
@@ -101,11 +124,14 @@ def run_Power_Flow(ppc, active_nodes, active_power,reactive_power,pv_profile):
     results = runpf(ppc, opt)
     bus_results = results[0]['bus']
 
+    for i in range(grid_data["nb"]):
+        v_tot.append(bus_results[int(i-1)][VM])
+
     for i in range(int(len(c))):
         v_gen.append(bus_results[int(c[i]-1)][VM])
         p.append(gen[i+1][PG])
     
-    return v_gen,p,c
+    return v_tot,v_gen,p,c
 
 
 ############################ Start the Server #######################################################
@@ -207,20 +233,33 @@ def measurement_output(data, *args):
 dmuObj.addRx(measurement_output,"voltage_dict")
 dmuObj.addRx(measurement_output,"pv_input_dict")
 
-
-
-
 # read profiles from CSV files
 # =======================================================================
 profiles = read_profiles()
 [PV_list, P_load_list] = profiles.read_csv()
 
 ppc = case()
-initialize(ppc, [PV_list, P_load_list])
-k=0
+grid_data = initialize(ppc, [PV_list, P_load_list])
+
+
+########################################################################################################
+#########################  Section for Posting Signal (for Grafana) ####################################
+########################################################################################################
+grafanaArrayPos = 0
+dataDict = []
+for i in range(1000):
+    dataDict.extend([[0,0]])
+
+for i in range(grid_data["nb"]+1):
+    dmuObj.addElm("grafana voltage node_"+str(i), dataDict)
+    dmuObj.addElm("grafana reactive power node_"+str(i), dataDict)
+    dmuObj.addElm("grafana active power node_"+str(i), dataDict)
+
+
+k=1000
 try:
     while True:
-        
+
         # intialize the dictionaries
         voltage_dict = {}
         pv_input_dict = {}
@@ -248,15 +287,35 @@ try:
         else:
             q_value = list(reactive_power.values())
 
-        [v_gen,p,c] = run_Power_Flow(ppc,active_nodes,p_value,q_value,PV_list[k][:])
+        pv_profile_k = PV_list[k][:]#[2.0]*len(active_nodes)#
+
+        [v_tot,v_gen,p,c] = run_Power_Flow(ppc,active_nodes,p_value,q_value,pv_profile_k)
         # logging.debug("v_gen, p, c")
         # logging.debug([v_gen,p,c])
       
         for i in range(len(c)):
             voltage_dict["node_"+str(int(active_nodes[i]))] = v_gen[i]
-            pv_input_dict["node_"+str(int(active_nodes[i]))] = PV_list[k][i]
+            pv_input_dict["node_"+str(int(active_nodes[i]))] = pv_profile_k[i]
         dmuObj.setDataSubset({"voltage_measurements": voltage_dict},"voltage_dict")
         dmuObj.setDataSubset({"pv_input_measurements": pv_input_dict},"pv_input_dict")
+
+        for i in range(grid_data["nb"]):
+            if i in active_nodes and active_power is not None and  reactive_power is not None:
+                sim_list2= [reactive_power["node_"+str(i)], time.time()*1000]
+                dmuObj.setDataSubset(sim_list2,"grafana reactive power node_"+str(i+1),grafanaArrayPos)
+                sim_list3= [active_power["node_"+str(i)], time.time()*1000]
+                dmuObj.setDataSubset(sim_list3,"grafana active power node_"+str(i+1),grafanaArrayPos)
+            else:
+                sim_list2= [0.0, time.time()*1000]
+                dmuObj.setDataSubset(sim_list2,"grafana reactive power node_"+str(i+1),grafanaArrayPos)
+                sim_list3= [0.0, time.time()*1000]
+                dmuObj.setDataSubset(sim_list3,"grafana active power node_"+str(i+1),grafanaArrayPos)
+            sim_list = [v_tot[i], time.time()*1000]
+            dmuObj.setDataSubset(sim_list,"grafana voltage node_"+str(i+1),grafanaArrayPos)
+        
+        grafanaArrayPos = grafanaArrayPos+1
+        if grafanaArrayPos>1000:
+            grafanaArrayPos = 0
 
         logging.debug(active_power_value)        
         logging.debug(reactive_power_value)

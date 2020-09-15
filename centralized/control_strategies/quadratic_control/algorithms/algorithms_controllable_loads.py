@@ -88,8 +88,8 @@ class algorithms_controllable_loads:
         delta_t = self.data[7]
 
         for i in range(len(n_battery)):
-            lamda_max[i] = max(lamda_max[i]-alpha[i]*(-v[i]+VMAX[i]),0)
-            lamda_min[i] = max(lamda_min[i]-alpha[i]*(v[i]-VMIN[i]),0)
+            lamda_max[i] = max(lamda_max[i]*delta_t-alpha[i]*(-v[i]+VMAX[i]),0)
+            lamda_min[i] = max(lamda_min[i]*delta_t-alpha[i]*(v[i]-VMIN[i]),0)
 
         return lamda_max, lamda_min
 

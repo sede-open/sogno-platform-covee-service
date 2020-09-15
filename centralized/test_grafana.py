@@ -34,25 +34,26 @@ httpSrvThread.start()
 ########################################################################################################
 grafanaArrayPos = 0
 dataDict = []
-for i in range(1000):
+for i in range(10000):
     dataDict.extend([[0,0]])
 
 dmuObj.addElm("grafana test", dataDict)
 
-
+k = 0
 try:
     while True:
-        for k in range(1000):
+        # for k in range(1000):
 
-            ts = time.time()*1000
-            point = np.sin(float(grafanaArrayPos))
-            sim_list = [point,ts]
-            dmuObj.setDataSubset(sim_list,"grafana test",grafanaArrayPos)
+        ts = int(round(time.time() * 1000.0))
+        point = np.sin(10*float(k))
+        sim_list = [point,ts]
+        dmuObj.setDataSubset(sim_list,"grafana test",grafanaArrayPos)
 
-            grafanaArrayPos = grafanaArrayPos+1
-            if grafanaArrayPos>1000:
-                grafanaArrayPos = 0
-            time.sleep(0.5)
+        grafanaArrayPos = grafanaArrayPos+1
+        if grafanaArrayPos>10000:
+            grafanaArrayPos = 0
+        time.sleep(0.1)
+        k+=1
 
     print('simulation finished')
 
