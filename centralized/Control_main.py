@@ -160,6 +160,16 @@ def control_output(data, *args):
 dmuObj.addRx(control_output,"active_power_dict")
 dmuObj.addRx(control_output,"reactive_power_dict")
 
+reactive_power = [0.0]*grid_data["nb"]
+active_power = [0.0]*grid_data["nb"]
+
+active_nodes = list(np.array(np.matrix(ppc["gen"])[:,0]).flatten())
+active_nodes = active_nodes[1:len(active_nodes)]
+pv_nodes = [float(i)-1 for i in active_nodes]
+pv_nodes_old = pv_nodes    
+control = Quadratic_Control_PV(grid_data, pv_nodes)
+control.initialize_control()
+
 try:
     while True:
         active_power_dict = {}
@@ -174,28 +184,20 @@ try:
 
         if voltage_value and pv_input_meas:
             ts = time.time()*1000   # time in milliseconds
-
             pv_nodes = list(map(lambda x: x.replace('node_',''),list(voltage_meas.keys())))
             num_pv = len(list(voltage_meas.values()))
             pv_nodes = [float(i)-1 for i in pv_nodes]
 
-            if not reactive_power_dict:
-                reactive_power = [0.0]*num_pv
-            else:
-                pass
-            if not active_power_dict:
-                active_power = [0.0]*num_pv
-            else:
-                pass
-
-            v_gen = list(voltage_meas.values())
+            v_gen = list(voltage_meas.values())#[1.07]*len(list(voltage_meas.values()))
             pv_input = list(pv_input_meas.values())
+            if pv_nodes != pv_nodes_old:
+                control = Quadratic_Control_PV(grid_data, pv_nodes)
+                control.initialize_control()
+                pv_nodes_old = pv_nodes 
 
-            control = Quadratic_Control_PV(grid_data, pv_nodes)
-            control.initialize_control()
-            [reactive_power, active_power] = control.control_(pv_input, reactive_power, active_power, v_gen)
+            reactive_power = control.control_(pv_input, reactive_power, active_power, v_gen)
 
-            # active_power = [0.0]*num_pv
+            active_power = [0.0]*num_pv
             k = 0
             for key in voltage_meas.keys():
                 #updating dictionaries
@@ -207,10 +209,8 @@ try:
             dmuObj.setDataSubset({"active_power":active_power_dict},"active_power_dict")
             dmuObj.setDataSubset({"reactive_power":reactive_power_dict},"reactive_power_dict")
 
-            logging.debug("reactive_power")
-            logging.debug(reactive_power_dict)
-            logging.debug("active_power")
-            logging.debug(active_power_dict)
+            print("Reactive Power", reactive_power)
+            print("Active Power", active_power)
 
         else:
             pass

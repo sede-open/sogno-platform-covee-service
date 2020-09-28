@@ -70,7 +70,7 @@ def initialize( name, profiles):
 
     return grid_data
 
-def run_Power_Flow(ppc, active_nodes, active_power,reactive_power,pv_profile):
+def run_Power_Flow(ppc, active_nodes, active_power,reactive_power,pv_profile,load_profile):
     ppc = ext2int(ppc)      # convert to continuous indexing starting from 0
     BUS_TYPE = 1
 
@@ -107,7 +107,7 @@ def run_Power_Flow(ppc, active_nodes, active_power,reactive_power,pv_profile):
 
     ############## SET THE ACTUAL LOAD AND GEN VALUES ###############-+
     for i in range(int(nb)-1):
-        bus[i][PD] = 0.3 
+        bus[i][PD] = load_profile[i]#0.3 
         bus[i][QD] = 0.0
 
     for i in range(int(len(c))):
@@ -254,9 +254,9 @@ for i in range(grid_data["nb"]+1):
     dmuObj.addElm("grafana voltage node_"+str(i), dataDict)
     dmuObj.addElm("grafana reactive power node_"+str(i), dataDict)
     dmuObj.addElm("grafana active power node_"+str(i), dataDict)
+    dmuObj.addElm("grafana pv production node_"+str(i), dataDict)
 
-
-k=1000
+k=800
 try:
     while True:
 
@@ -287,9 +287,10 @@ try:
         else:
             q_value = list(reactive_power.values())
 
-        pv_profile_k = [2.0]*len(active_nodes)#PV_list[k][:]#
+        pv_profile_k = PV_list[k][:]#[1.4]*len(active_nodes)#
+        p_load_k = P_load_list[k][:]#[0.5]*grid_data["nb"]#
 
-        [v_tot,v_gen,p,c] = run_Power_Flow(ppc,active_nodes,p_value,q_value,pv_profile_k)
+        [v_tot,v_gen,p,c] = run_Power_Flow(ppc,active_nodes,p_value,q_value,pv_profile_k,p_load_k)
         # logging.debug("v_gen, p, c")
         # logging.debug([v_gen,p,c])
       
@@ -305,13 +306,22 @@ try:
                 dmuObj.setDataSubset(sim_list2,"grafana reactive power node_"+str(i+1),grafanaArrayPos)
                 sim_list3= [active_power["node_"+str(i)], time.time()*1000]
                 dmuObj.setDataSubset(sim_list3,"grafana active power node_"+str(i+1),grafanaArrayPos)
+                # if i == 22:
+                #     sim_list4 = [0.0, time.time()*1000]
+                #     dmuObj.setDataSubset(sim_list4,"grafana pv production node_"+str(i+1),grafanaArrayPos)
+                # else:
+                #     sim_list4 = [pv_profile_k[i], time.time()*1000]
+                #     dmuObj.setDataSubset(sim_list4,"grafana pv production node_"+str(i+1),grafanaArrayPos)           
             else:
                 sim_list2= [0.0, time.time()*1000]
                 dmuObj.setDataSubset(sim_list2,"grafana reactive power node_"+str(i+1),grafanaArrayPos)
                 sim_list3= [0.0, time.time()*1000]
                 dmuObj.setDataSubset(sim_list3,"grafana active power node_"+str(i+1),grafanaArrayPos)
+                sim_list4 = [0.0, time.time()*1000]
+                dmuObj.setDataSubset(sim_list4,"grafana pv production node_"+str(i+1),grafanaArrayPos)
             sim_list = [v_tot[i], time.time()*1000]
             dmuObj.setDataSubset(sim_list,"grafana voltage node_"+str(i+1),grafanaArrayPos)
+
         
         grafanaArrayPos = grafanaArrayPos+1
         if grafanaArrayPos>1000:
