@@ -7,3 +7,6 @@
 [submodule "centralized/submodules/dmu"]
 	path = centralized/submodules/dmu
 	url = git@git-ce.rwth-aachen.de:acs/internal/automation/modules/dmu.git
+[submodule "centralized"]
+	path = centralized
+	url = git@git-ce.rwth-aachen.de:acs/private/research/edgeflex/pv_centralized.git
