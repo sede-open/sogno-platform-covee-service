@@ -1,11 +1,11 @@
 SHELL := /bin/bash
 
 all:
-	$(MAKE) -C centralized init
+	$(MAKE) -C pv_centralized init
 	$(MAKE) -C powerflow init
 
 clean:
-	$(MAKE) -C centralized clean
+	$(MAKE) -C pv_centralized clean
 	$(MAKE) -C powerflow clean
 
 ext:

@@ -23,13 +23,13 @@ services:
   pv_centralized:
     build:
       context: '.'
-      dockerfile: './centralized.Dockerfile'
+      dockerfile: './pv_centralized.Dockerfile'
     volumes:
-      - ./centralized:/centralized
-    command: bash -c "cd centralized && 
+      - ./pv_centralized:/pv_centralized
+    command: bash -c "cd pv_centralized && 
                       make init &&
                       cd .. &&
-                      /centralized/covee/bin/python3 /centralized/Control_main.py --ext_port 7071"
+                      /pv_centralized/covee/bin/python3 /pv_centralized/Control_main.py --ext_port 7071"
     command:          tail -F dfsdfödslk
     ports:
       - 7071:8000

@@ -12,5 +12,5 @@ RUN apt-get update -y \
 # RUN python3 -m virtualenv --python=/usr/bin/python3 $VIRTUAL_ENV
 # ENV PATH="$VIRTUAL_ENV/bin:$PATH"
 
-COPY centralized/setup/requirements_docker.txt .
+COPY pv_centralized/setup/requirements_docker.txt .
 RUN pip3 install -r requirements_docker.txt

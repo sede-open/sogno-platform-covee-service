@@ -4,9 +4,9 @@
 [submodule "powerflow/submodules/dmu"]
 	path = powerflow/submodules/dmu
 	url = git@git-ce.rwth-aachen.de:acs/internal/automation/modules/dmu.git
-[submodule "centralized/submodules/dmu"]
-	path = centralized/submodules/dmu
+[submodule "pv_centralized/submodules/dmu"]
+	path = pv_centralized/submodules/dmu
 	url = git@git-ce.rwth-aachen.de:acs/internal/automation/modules/dmu.git
-[submodule "centralized"]
-	path = centralized
+[submodule "pv_centralized"]
+	path = pv_centralized
 	url = git@git-ce.rwth-aachen.de:acs/private/research/edgeflex/pv_centralized.git

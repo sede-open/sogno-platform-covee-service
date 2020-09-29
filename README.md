@@ -12,12 +12,12 @@ The submodule installed is the "dmu", a tool to REST API
 - run in terminal: make all
 
 ### There are three containers:
-- pv_centralized: Run the voltage control
+- pv_pv_centralized: Run the voltage control
 - powerflow: Run the powerflow (simulation of the electrical grid)
 - grafana (optional):  For the visualization
 
 
-### Running pv_centralized and powerflow containers:
+### Running pv_pv_centralized and powerflow containers:
 - There is a docker-compose.yml file, that is installing all the required components for each container.
 - run in terminal: sudo docker-compose up
 
