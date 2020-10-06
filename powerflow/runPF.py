@@ -109,10 +109,13 @@ def run_Power_Flow(ppc, active_nodes, active_power,reactive_power,pv_profile,loa
     for i in range(int(nb)-1):
         bus[i][PD] = load_profile[i]#0.3 
         bus[i][QD] = 0.0
-
-    for i in range(int(len(c))):
-        gen[i+1][QG] = reactive_power[i]
-        gen[i+1][PG] = pv_profile[i] + active_power[i]
+        gen[i][PG] = pv_profile[i]
+        if i in c:
+            gen[i][QG] = reactive_power[i]
+            gen[i][PG] = pv_profile[i] + active_power[i]
+    # for i in range(int(len(c))):
+    #     gen[i+1][QG] = reactive_power[i]
+    #     gen[i+1][PG] = pv_profile[i] + active_power[i]
 
     ppc['bus'] = bus
     ppc['gen'] = gen
@@ -257,61 +260,72 @@ for i in range(grid_data["nb"]+1):
     dmuObj.addElm("grafana pv production node_"+str(i), dataDict)
 
 k=800
+
+########################## Initialization vectors  ######################################################
+active_nodes = list(np.array(np.matrix(ppc["gen"])[:,0]).flatten())
+full_nodes = active_nodes[1:len(active_nodes)]
+active_nodes = active_nodes[1:len(active_nodes)]
+active_nodes = [float(i)-1 for i in active_nodes]
+full_active_power_dict = {}
+full_reactive_power_dict = {}
+for i in full_nodes:
+    full_active_power_dict["node_"+str(int(i))] = 0.0
+    full_reactive_power_dict["node_"+str(int(i))] = 0.0
+
+
+########################################### Main #########################################################
 try:
     while True:
-
         # intialize the dictionaries
         voltage_dict = {}
         pv_input_dict = {}
         
-        active_nodes = dmuObj.getDataSubset("simDict","active_nodes")
-        if not active_nodes:
-            logging.debug("no input received")
-            active_nodes = list(np.array(np.matrix(ppc["gen"])[:,0]).flatten())
-            active_nodes = active_nodes[1:len(active_nodes)]
-        else:
-            active_nodes = list(active_nodes.values())[0]
-        logging.debug("active nodes")
-        logging.debug(active_nodes)
-
         active_power_value = dmuObj.getDataSubset("active_power_control_dict")
         active_power = active_power_value.get("active_power", None)
         reactive_power_value = dmuObj.getDataSubset("reactive_power_control_dict")
         reactive_power = reactive_power_value.get("reactive_power", None)
-        if not active_power or len(active_nodes)!=len(list(active_power.values())):
-            p_value = [0.0] * len(active_nodes)
+        if not active_power:
+            p_value = list(full_active_power_dict.values())
         else:
-            p_value = list(active_power.values())
-        if not reactive_power or len(active_nodes)!=len(list(reactive_power.values())):
-            q_value = [0.0] * len(active_nodes)
+            active_nodes = list(map(lambda x: x.replace('node_',''),list(active_power.keys())))
+            active_nodes = [float(i)-1 for i in active_nodes]
+            for key in active_power:
+                full_active_power_dict[key] = active_power[key]
+            p_value = list(full_active_power_dict.values())
+
+        if not reactive_power:
+            q_value = list(full_reactive_power_dict.values())
         else:
-            q_value = list(reactive_power.values())
+            active_nodes = list(map(lambda x: x.replace('node_',''),list(reactive_power.keys())))
+            active_nodes = [float(i)-1 for i in active_nodes]
+            for key in reactive_power:
+                full_reactive_power_dict[key] = reactive_power[key]
+            q_value = list(full_reactive_power_dict.values())
 
         pv_profile_k = PV_list[k][:]#[1.4]*len(active_nodes)#
         p_load_k = P_load_list[k][:]#[0.5]*grid_data["nb"]#
 
+        print("active nodes ",active_nodes)
         [v_tot,v_gen,p,c] = run_Power_Flow(ppc,active_nodes,p_value,q_value,pv_profile_k,p_load_k)
-        # logging.debug("v_gen, p, c")
-        # logging.debug([v_gen,p,c])
       
-        for i in range(len(c)):
-            voltage_dict["node_"+str(int(active_nodes[i]))] = v_gen[i]
-            pv_input_dict["node_"+str(int(active_nodes[i]))] = pv_profile_k[i]
+        for i in range(len(full_nodes)):
+            voltage_dict["node_"+str(int(full_nodes[i]))] = v_tot[i]
+            pv_input_dict["node_"+str(int(full_nodes[i]))] = pv_profile_k[i]
         dmuObj.setDataSubset({"voltage_measurements": voltage_dict},"voltage_dict")
         dmuObj.setDataSubset({"pv_input_measurements": pv_input_dict},"pv_input_dict")
 
         for i in range(grid_data["nb"]):
             if i in active_nodes and active_power is not None and  reactive_power is not None:
-                sim_list2= [reactive_power["node_"+str(i)], time.time()*1000]
+                sim_list2= [reactive_power["node_"+str(i+1)], time.time()*1000]
                 dmuObj.setDataSubset(sim_list2,"grafana reactive power node_"+str(i+1),grafanaArrayPos)
-                sim_list3= [active_power["node_"+str(i)], time.time()*1000]
+                sim_list3= [active_power["node_"+str(i+1)], time.time()*1000]
                 dmuObj.setDataSubset(sim_list3,"grafana active power node_"+str(i+1),grafanaArrayPos)
-                # if i == 22:
-                #     sim_list4 = [0.0, time.time()*1000]
-                #     dmuObj.setDataSubset(sim_list4,"grafana pv production node_"+str(i+1),grafanaArrayPos)
-                # else:
-                #     sim_list4 = [pv_profile_k[i], time.time()*1000]
-                #     dmuObj.setDataSubset(sim_list4,"grafana pv production node_"+str(i+1),grafanaArrayPos)           
+                if i == 22:
+                    sim_list4 = [0.0, time.time()*1000]
+                    dmuObj.setDataSubset(sim_list4,"grafana pv production node_"+str(i+1),grafanaArrayPos)
+                else:
+                    sim_list4 = [pv_profile_k[i], time.time()*1000]
+                    dmuObj.setDataSubset(sim_list4,"grafana pv production node_"+str(i+1),grafanaArrayPos)           
             else:
                 sim_list2= [0.0, time.time()*1000]
                 dmuObj.setDataSubset(sim_list2,"grafana reactive power node_"+str(i+1),grafanaArrayPos)
