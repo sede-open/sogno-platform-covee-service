@@ -109,6 +109,7 @@ def run_Power_Flow(ppc, active_nodes, active_power,reactive_power,pv_profile,loa
     for i in range(int(nb)-1):
         bus[i][PD] = load_profile[i]#0.3 
         bus[i][QD] = 0.0
+    for i in range(ng-1):
         gen[i][PG] = pv_profile[i]
         if i in c:
             gen[i][QG] = reactive_power[i]
