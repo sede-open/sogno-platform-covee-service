@@ -1,10 +1,11 @@
 # CoVee Control
 # Coordinated Voltage Control
-
+The voltage control that we are implemented comes from the theory described in this **paper**:
+[**A Coordinated Voltage Control for Overvoltage Mitigation in LV Distribution Grids** ](https://www.mdpi.com/1996-1073/13/8/2007)
 
 ## Download the respository
 please clone it with: git clone --recursive <ssh-link>  (to download the submodules) \\
-The submodule installed is the "dmu", a tool to REST API
+The submodule installed are "pv_centralized", "powerflow" and "dmu", a tool to REST API
 
 ## Installation
 
