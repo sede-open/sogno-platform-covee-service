@@ -33,3 +33,9 @@ services:
     # command:          tail -F dfsdfödslk
     ports:
       - 7071:8000
+
+  mqtt:
+    image: eclipse-mosquitto
+    ports:
+      - "1883:1883"
+      - "9001:9001"
