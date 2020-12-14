@@ -1,12 +1,12 @@
 version: '3.3'
 
 services:
-  # grafana:
-  #   image: grafana/grafana
-  #   ports:
-  #     - 3000:3000
-  #   environment:
-  #     - "GF_INSTALL_PLUGINS=grafana-clock-panel,grafana-simple-json-datasource"
+  grafana:
+    image: grafana/grafana
+    ports:
+      - 3000:3000
+    environment:
+      - "GF_INSTALL_PLUGINS=grafana-clock-panel,grafana-simple-json-datasource"
   powerflow:
     build:
       context: '.'
@@ -39,3 +39,21 @@ services:
     ports:
       - "1883:1883"
       - "9001:9001"
+
+  influxdb:
+    image: influxdb:latest
+    restart: unless-stopped
+    ports:
+      - 8086:8086
+    environment:
+      - "INFLUXDB_REPORTING_DISABLED=true"
+    volumes:
+      - ./powerflow/influxdb/data/:/var/lib/influxdb
+
+  telegraf:
+    image: telegraf:1.10.4
+    depends_on:
+      - influxdb
+      - mqtt
+    volumes:
+      - ./powerflow/telegraf/telegraf.conf:/etc/telegraf/telegraf.conf:ro
