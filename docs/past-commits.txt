@@ -1,3 +1,52 @@
 I, Markus Robert Mirz hereby sign-off-by all of my past commits to this repo subject to the Developer Certificate of Origin (DCO), Version 1.1. In the past I have used emails: markus.mirz@rwth-aachen.de
 
 141a5c3a3cc1f75e5346d37a3a46dcae9539631f Add LICENSE
+
+
+I, Edoardo De Din hereby sign-off-by all of my past commits to this repo subject to the Developer Certificate of Origin (DCO), Version 1.1. In the past I have used emails: ede@ubuntu-ede-1.acs-lab.eonerc.rwth-aachen.de, acs-ede@Laptop-acs051.eonerc.rwth-aachen.de, ededin@eonerc.rwth-aachen.de, edoardo.de.din@rwth-aachen.de
+
+f91e18d7841c3cc959d596a4b6f5ad058f46717e submodules changes
+e5e69f3e12cab63a84e13346d2149cf8aa1d9d57 newversion powerflow with influx
+115274dd86164f0b64430930312be804f5c28aa2 solved problem with reactive power
+0593d93ab7ac03efcfd8ec18694b2f5b9f368aee solved problem with grafana
+925f24044601589e578a521b29fdc571ca9f4962 modified version for battey control
+5bea8d24fda5b74a78f647bee088eabe09e4e1ed new verson submodules
+11eb8de09bf29c8e158603e25488fbe466d4183d new version with MQTT
+1ef8095ef0947d7498b400b6a28d2a496be04ff0 submodules path changed
+a2d24bfdc50443fbadb1c49889c7ded9829ba3cf updated submodules
+9420cb37ce8f1820ae238c57b721b6b27a237802 Update README.md
+5cbfea04118cfcbc73b254daca106877d4a076d2 modified submodules for edgeflex architecture
+761d8a33fe9fd0c18761489502ae7c6f2fee0df4 grafana config
+dcd52c2b5bcdecf76367b0daee7431b55e67b423 modified gitignore pv_centralized
+ec12de15aaf4311eed10cda2b9c666a4a19be930 powerflow switched to master
+7fca32ef7b2ac1e06a3d3680d2d8ce801b3f0047 pv_centralized with tag
+6d4c81f81857136386550a1647ec3ca7f101c627 additional change in assigning the values of the control signals to the generatirs
+0fee9746f1cfd055d0fe9d5fe3ebf7c4a1b708f1 powerflow receiving sending full vector of measuements, powerflow calculation modified so that pv_profile is assigned to all the nodes but the control only on the active nodes
+c022fc3e22f7eeeca6022c59226aa98879e65ef5 v_centralized modified
+c2225f3f55ec0dc920eecb5b631db6e8fae7d495 control with submodules
+6c747659097a248a90c36ff6e1cd7e24bf1d9576 ccentralized remove
+22f4826e90f3c4f40fcfb554cfebf8497758a6e8 solved problem with initialization of the control
+b82f95e217669695b460c8d16d2c0408691bc69d modified alpha coefficient. added delta_t
+2a9d6ee3aeb1b79737769d410aee4b672e9565fc some changes (maybe working) for the stability of the alfgorithm
+a77cf46eebaa41cd3278a84b8997f5a308118928 active power curtailment PV added
+4f46cefea3d25567ce1350cde47752507764f056 solved missing inzialization pv power input on powerflow, added variable case for the case study defined in the import part
+d7a5e19acddbf7cd850aa93506af136e9793b2ab README updated
+bce9538cb740371d885f568eaa0226ff53bc3d26 README updated
+a1b2a6f9c0d2df69857724d82d5ed2f4061155d8 Plot.py deleted
+4ecabd6d16cd26c169b40098dfde744c05299be7 README updated
+ad1080785e15636e04f2d3ee188d018dbf095abd control with grafana for visualization
+d9fab5a329ea42b46cd9da9a654d6ed55c654e31 modified makefiles with sudo for remove
+4da248f6d7dea4585495f84e4ea9f6ce300cd962 modified docker-compose and name of the control file
+fd76de691f870779e4853eb5bac06f53e4c50185 docker-compose working
+5019252accad9a2014aa7736a62e0bd7cfe9fe24 new version dockefile and docke-compose
+7b089ecb219f7a939b82d7449fbe68f9b83ffbd5 new version dockerfile and docker-compose
+4f96aa3015a3f69155f7a0bb16af23852a9ce1be Initial commit
+7d0822c0eecfb9c2b436c9321d1e646288489948 powerflow as submodule
+20b6fa689e9f7698820fb10f08c1640de4d0141b powerflow removed as folder
+59c83ad31cde480e9a16a67df988e9f954d0b4ce centralized control added as submodule
+ba894c764f7bc003341518d5b38d61f3611ac3b1 centralized eliminated as folder
+0bf7cdc285c8b34e062c202f1ff9fe0165276a71 first commit covee-centralized with docker
+a3bb82408c5f18ade96235f26891878e077e6cdb closed loop with reactive power control working
+6e54996c192f9c979ca6071e11311731993e15f2 communication loop closed
+0203bd52cbde828a8e98f10e456f1e4f4cb90376 PF working and commuication to external file
+7143511f8717eeefd46587472aab35a78cf67966 makefile generla
