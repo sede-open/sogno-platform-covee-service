@@ -4,3 +4,9 @@
 [submodule "pv_centralized/submodules/dmu"]
 	path = pv_centralized/submodules/dmu
 	url = git@git.rwth-aachen.de:acs/public/automation/modules/dmu.git
+[submodule "covee"]
+	path = covee
+	url = git@github.com:RWTH-ACS/covee.git
+[submodule "covee-powerflow"]
+	path = covee-powerflow
+	url = git@github.com:RWTH-ACS/covee-powerflow.git
