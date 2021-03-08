@@ -5,26 +5,22 @@ The voltage control that we are implemented comes from the theory described in t
 
 ## Download the respository
 please clone it with: git clone --recursive <ssh-link>  (to download the submodules) \\
-The submodule installed are "pv_centralized", "powerflow" and "dmu", a tool to REST API
+The submodule installed are "covee", "covee-powerflow" and "dmu", a tool for the implementation of REST or MQTT
 
 ## Installation
 
 ### to populate the containers with a virtual environment
 - run in terminal: make all
 
-### There are three containers:
-- pv_pv_centralized: Run the voltage control
-- powerflow: Run the powerflow (simulation of the electrical grid)
+### There main containers are:
+- covee: Run the voltage control
+- covee-powerflow: Run the powerflow (simulation of the electrical grid)
 - grafana (optional):  For the visualization
 
 
-### Running pv_pv_centralized and powerflow containers:
+### Running covee and powerflow containers:
 - There is a docker-compose.yml file, that is installing all the required components for each container.
 - run in terminal: sudo docker-compose up
-
-### Running grafana container:
-- There is a different docker-container-grafana.yml
-- run in terminal: sudo docker-compose -f docker-container-grafana.yml up
 
 ### There is a python file to test external message to the voltage control (to control the number of active nodes):
 - run in terminal: make ext
