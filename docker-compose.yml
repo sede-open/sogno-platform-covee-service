@@ -7,29 +7,29 @@ services:
       - 3000:3000
     environment:
       - "GF_INSTALL_PLUGINS=grafana-clock-panel,grafana-simple-json-datasource"
-  powerflow:
+  covee-powerflow:
     build:
       context: '.'
-      dockerfile: './powerflow.Dockerfile'
+      dockerfile: './covee-powerflow.Dockerfile'
     volumes:
-      - ./powerflow:/powerflow
-    command: bash -c "cd powerflow && 
+      - ./covee-powerflow:/covee-powerflow
+    command: bash -c "cd covee-powerflow && 
                       make init &&
                       cd .. &&
-                      /powerflow/powerflow/bin/python3 /powerflow/runPF.py --ext_port 7070"
-    command:          tail -F dfsdfödslk
+                      /covee-powerflow/powerflow/bin/python3 /covee-powerflow/runPF.py --ext_port 7070"
+    command:          tail -F dfsdfökdslk
     ports:
       - 7070:8000
-  pv_centralized:
+  covee:
     build:
       context: '.'
-      dockerfile: './pv_centralized.Dockerfile'
+      dockerfile: './covee.Dockerfile'
     volumes:
-      - ./pv_centralized:/pv_centralized
-    command: bash -c "cd pv_centralized && 
+      - ./covee:/covee
+    command: bash -c "cd covee && 
                       make init &&
                       cd .. &&
-                      /pv_centralized/covee/bin/python3 /pv_centralized/Control_main.py --ext_port 7071"
+                      /covee/covee/bin/python3 /covee/Control_main.py --ext_port 7071"
     command:          tail -F dfsdfödslk
     ports:
       - 7071:8000
@@ -48,7 +48,7 @@ services:
     environment:
       - "INFLUXDB_REPORTING_DISABLED=true"
     volumes:
-      - ./powerflow/influxdb/data/:/var/lib/influxdb
+      - ./covee-powerflow/influxdb/data/:/var/lib/influxdb
 
   telegraf:
     image: telegraf:1.10.4
@@ -56,4 +56,4 @@ services:
       - influxdb
       - mqtt
     volumes:
-      - ./powerflow/telegraf/telegraf.conf:/etc/telegraf/telegraf.conf:ro
+      - ./covee-powerflow/telegraf/telegraf.conf:/etc/telegraf/telegraf.conf:ro
