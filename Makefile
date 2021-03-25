@@ -19,3 +19,4 @@ clean_ext:
 	rm -R -f venv_ext
 	rm -R -f __pycache__
 	rm -R -f venv_ext.egg-info
+	rm -R -f ./setup_ext/venv_ext.egg-info

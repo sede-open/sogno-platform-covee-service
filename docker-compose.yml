@@ -3,6 +3,8 @@ version: '3.3'
 services:
   grafana:
     image: grafana/grafana
+    volumes:
+      - ./grafana/config/custom.ini:/etc/grafana/grafana.ini
     ports:
       - 3000:3000
     environment:
@@ -26,7 +28,7 @@ services:
       dockerfile: './covee.Dockerfile'
     volumes:
       - ./covee:/covee
-    command: bash -c "cd covee && 
+    command: bash -c "cd covee &&  
                       make init &&
                       cd .. &&
                       /covee/covee/bin/python3 /covee/Control_main.py --ext_port 7071"
