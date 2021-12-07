@@ -8,7 +8,8 @@ requiredPackages = [#should only contain third party pakages
     "matplotlib",
     "ipython",
     "requests",
-    "paho_mqtt"
+    "paho_mqtt",
+    "timeloop"
 ],
 
 setup(

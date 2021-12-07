@@ -1,0 +1,34 @@
+version: '2'
+services: 
+    covee:
+        extends:
+            file: docker-compose.yml
+            service: covee
+        environment:
+            - "MQTT_ENABLED=false"
+            - "MQTTURL=fry.acs-lab.eonerc.rwth-aachen.de"
+            - "MQTTPORT=1883"
+            - "MQTTUSER=test"
+            - "MQTTPASS=tester"
+    # influxdb:
+    #     extends:
+    #         file: docker-compose.yml
+    #         service: influxdb
+    # telegraf:
+    #     extends:
+    #         file: docker-compose.yml
+    #         service: telegraf
+    # grafana:
+    #     extends:
+    #         file: docker-compose.yml
+    #         service: grafana
+    covee-powerflow:
+        extends:
+            file: docker-compose.yml
+            service: powerflow
+        environment:
+            - "MQTT_ENABLED=true"
+            - "MQTTURL=fry.acs-lab.eonerc.rwth-aachen.de"
+            - "MQTTPORT=1883"
+            - "MQTTUSER=test"
+            - "MQTTPASS=tester"
