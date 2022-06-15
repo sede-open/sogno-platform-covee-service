@@ -15,7 +15,7 @@
   "editable": true,
   "gnetId": null,
   "graphTooltip": 0,
-  "id": 2,
+  "id": 1,
   "links": [],
   "panels": [
     {
@@ -23,7 +23,7 @@
       "bars": false,
       "dashLength": 10,
       "dashes": false,
-      "datasource": "voltage-control",
+      "datasource": "InfluxDB",
       "fieldConfig": {
         "defaults": {
           "custom": {}
@@ -63,7 +63,7 @@
       "steppedLine": false,
       "targets": [
         {
-          "alias": "Node 40",
+          "alias": "Node 6",
           "groupBy": [
             {
               "params": [
@@ -87,7 +87,7 @@
             [
               {
                 "params": [
-                  "voltage_measurements_38"
+                  "voltage_measurements_6"
                 ],
                 "type": "field"
               },
@@ -106,7 +106,7 @@
           ]
         },
         {
-          "alias": "Node 39",
+          "alias": "Node 7",
           "groupBy": [
             {
               "params": [
@@ -130,7 +130,7 @@
             [
               {
                 "params": [
-                  "voltage_measurements_37"
+                  "voltage_measurements_7"
                 ],
                 "type": "field"
               },
@@ -149,7 +149,7 @@
           ]
         },
         {
-          "alias": "Node 38",
+          "alias": "Node 8",
           "groupBy": [
             {
               "params": [
@@ -173,7 +173,7 @@
             [
               {
                 "params": [
-                  "voltage_measurements_36"
+                  "voltage_measurements_8"
                 ],
                 "type": "field"
               },
@@ -192,7 +192,7 @@
           ]
         },
         {
-          "alias": "Node 35",
+          "alias": "Node 5",
           "groupBy": [
             {
               "params": [
@@ -216,7 +216,7 @@
             [
               {
                 "params": [
-                  "voltage_measurements_35"
+                  "voltage_measurements_5"
                 ],
                 "type": "field"
               },
@@ -235,7 +235,7 @@
           ]
         },
         {
-          "alias": "Node 34",
+          "alias": "Node 4",
           "groupBy": [
             {
               "params": [
@@ -259,7 +259,7 @@
             [
               {
                 "params": [
-                  "voltage_measurements_34"
+                  "voltage_measurements_4"
                 ],
                 "type": "field"
               },
@@ -325,7 +325,7 @@
       "timeFrom": null,
       "timeRegions": [],
       "timeShift": null,
-      "title": "Voltage (V)",
+      "title": "Voltage (p.u.)",
       "tooltip": {
         "shared": true,
         "sort": 0,
@@ -341,7 +341,6 @@
       },
       "yaxes": [
         {
-          "$$hashKey": "object:60",
           "format": "short",
           "label": null,
           "logBase": 1,
@@ -350,7 +349,6 @@
           "show": true
         },
         {
-          "$$hashKey": "object:61",
           "format": "short",
           "label": null,
           "logBase": 1,
@@ -369,7 +367,7 @@
       "bars": false,
       "dashLength": 10,
       "dashes": false,
-      "datasource": "voltage-control",
+      "datasource": "InfluxDB",
       "fieldConfig": {
         "defaults": {
           "custom": {}
@@ -409,7 +407,7 @@
       "steppedLine": false,
       "targets": [
         {
-          "alias": "Node 40",
+          "alias": "Node 7",
           "groupBy": [
             {
               "params": [
@@ -433,7 +431,7 @@
             [
               {
                 "params": [
-                  "pv_input_measurements_38"
+                  "pv_input_measurements_7"
                 ],
                 "type": "field"
               },
@@ -452,7 +450,7 @@
           ]
         },
         {
-          "alias": "Node 39",
+          "alias": "Node 8",
           "groupBy": [
             {
               "params": [
@@ -476,7 +474,7 @@
             [
               {
                 "params": [
-                  "pv_input_measurements_37"
+                  "pv_input_measurements_8"
                 ],
                 "type": "field"
               },
@@ -495,7 +493,7 @@
           ]
         },
         {
-          "alias": "Node 38",
+          "alias": "Node 6",
           "groupBy": [
             {
               "params": [
@@ -519,7 +517,7 @@
             [
               {
                 "params": [
-                  "pv_input_measurements_36"
+                  "pv_input_measurements_6"
                 ],
                 "type": "field"
               },
@@ -538,7 +536,7 @@
           ]
         },
         {
-          "alias": "Node 37",
+          "alias": "Node 5",
           "groupBy": [
             {
               "params": [
@@ -562,50 +560,7 @@
             [
               {
                 "params": [
-                  "pv_input_measurements_35"
-                ],
-                "type": "field"
-              },
-              {
-                "params": [],
-                "type": "mean"
-              }
-            ]
-          ],
-          "tags": [
-            {
-              "key": "topic",
-              "operator": "=",
-              "value": "measurements"
-            }
-          ]
-        },
-        {
-          "alias": "Node 36",
-          "groupBy": [
-            {
-              "params": [
-                "$__interval"
-              ],
-              "type": "time"
-            },
-            {
-              "params": [
-                "null"
-              ],
-              "type": "fill"
-            }
-          ],
-          "measurement": "mqtt_consumer",
-          "orderByTime": "ASC",
-          "policy": "default",
-          "refId": "E",
-          "resultFormat": "time_series",
-          "select": [
-            [
-              {
-                "params": [
-                  "pv_input_measurements_34"
+                  "pv_input_measurements_5"
                 ],
                 "type": "field"
               },
@@ -628,7 +583,7 @@
       "timeFrom": null,
       "timeRegions": [],
       "timeShift": null,
-      "title": "Active Power PV (W)",
+      "title": "Active Power PV (p.u.)",
       "tooltip": {
         "shared": true,
         "sort": 0,
@@ -644,7 +599,6 @@
       },
       "yaxes": [
         {
-          "$$hashKey": "object:60",
           "format": "short",
           "label": null,
           "logBase": 1,
@@ -653,7 +607,6 @@
           "show": true
         },
         {
-          "$$hashKey": "object:61",
           "format": "short",
           "label": null,
           "logBase": 1,
@@ -672,7 +625,7 @@
       "bars": false,
       "dashLength": 10,
       "dashes": false,
-      "datasource": "voltage-control",
+      "datasource": "InfluxDB",
       "fieldConfig": {
         "defaults": {
           "custom": {}
@@ -712,7 +665,7 @@
       "steppedLine": false,
       "targets": [
         {
-          "alias": "Node 40",
+          "alias": "Node 8",
           "groupBy": [
             {
               "params": [
@@ -736,7 +689,7 @@
             [
               {
                 "params": [
-                  "reactive_power_control_dict_38"
+                  "reactive_power_control_dict_8"
                 ],
                 "type": "field"
               },
@@ -755,7 +708,7 @@
           ]
         },
         {
-          "alias": "Node 39",
+          "alias": "Node 7",
           "groupBy": [
             {
               "params": [
@@ -779,7 +732,7 @@
             [
               {
                 "params": [
-                  "reactive_power_control_dict_37"
+                  "reactive_power_control_dict_7"
                 ],
                 "type": "field"
               },
@@ -798,7 +751,7 @@
           ]
         },
         {
-          "alias": "Node 38",
+          "alias": "Node 6",
           "groupBy": [
             {
               "params": [
@@ -822,7 +775,7 @@
             [
               {
                 "params": [
-                  "reactive_power_control_dict_36"
+                  "reactive_power_control_dict_6"
                 ],
                 "type": "field"
               },
@@ -841,7 +794,7 @@
           ]
         },
         {
-          "alias": "Node 37",
+          "alias": "Node 5",
           "groupBy": [
             {
               "params": [
@@ -865,50 +818,7 @@
             [
               {
                 "params": [
-                  "reactive_power_control_dict_35"
-                ],
-                "type": "field"
-              },
-              {
-                "params": [],
-                "type": "mean"
-              }
-            ]
-          ],
-          "tags": [
-            {
-              "key": "topic",
-              "operator": "=",
-              "value": "measurements"
-            }
-          ]
-        },
-        {
-          "alias": "Node 36",
-          "groupBy": [
-            {
-              "params": [
-                "$__interval"
-              ],
-              "type": "time"
-            },
-            {
-              "params": [
-                "null"
-              ],
-              "type": "fill"
-            }
-          ],
-          "measurement": "mqtt_consumer",
-          "orderByTime": "ASC",
-          "policy": "default",
-          "refId": "E",
-          "resultFormat": "time_series",
-          "select": [
-            [
-              {
-                "params": [
-                  "reactive_power_control_dict_34"
+                  "reactive_power_control_dict_5"
                 ],
                 "type": "field"
               },
@@ -931,7 +841,7 @@
       "timeFrom": null,
       "timeRegions": [],
       "timeShift": null,
-      "title": "Reactive Power PV (W)",
+      "title": "Reactive Power PV (p.u.)",
       "tooltip": {
         "shared": true,
         "sort": 0,
@@ -947,7 +857,6 @@
       },
       "yaxes": [
         {
-          "$$hashKey": "object:60",
           "format": "short",
           "label": null,
           "logBase": 1,
@@ -956,7 +865,6 @@
           "show": true
         },
         {
-          "$$hashKey": "object:61",
           "format": "short",
           "label": null,
           "logBase": 1,
@@ -971,7 +879,7 @@
       }
     },
     {
-      "datasource": "voltage-control",
+      "datasource": "InfluxDB",
       "fieldConfig": {
         "defaults": {
           "custom": {},
@@ -1022,7 +930,7 @@
       "pluginVersion": "7.1.5",
       "targets": [
         {
-          "alias": "Node 40",
+          "alias": "Node 8",
           "groupBy": [
             {
               "params": [
@@ -1046,7 +954,7 @@
             [
               {
                 "params": [
-                  "reactive_percentage_38"
+                  "reactive_percentage_8"
                 ],
                 "type": "field"
               },
@@ -1065,7 +973,7 @@
           ]
         },
         {
-          "alias": "Node 39",
+          "alias": "Node 7",
           "groupBy": [
             {
               "params": [
@@ -1089,7 +997,7 @@
             [
               {
                 "params": [
-                  "reactive_percentage_37"
+                  "reactive_percentage_7"
                 ],
                 "type": "field"
               },
@@ -1108,7 +1016,7 @@
           ]
         },
         {
-          "alias": "Node 38",
+          "alias": "Node 6",
           "groupBy": [
             {
               "params": [
@@ -1132,7 +1040,7 @@
             [
               {
                 "params": [
-                  "reactive_percentage_36"
+                  "reactive_percentage_6"
                 ],
                 "type": "field"
               },
@@ -1151,7 +1059,7 @@
           ]
         },
         {
-          "alias": "Node 37",
+          "alias": "Node 5",
           "groupBy": [
             {
               "params": [
@@ -1175,50 +1083,7 @@
             [
               {
                 "params": [
-                  "reactive_percentage_35"
-                ],
-                "type": "field"
-              },
-              {
-                "params": [],
-                "type": "mean"
-              }
-            ]
-          ],
-          "tags": [
-            {
-              "key": "topic",
-              "operator": "=",
-              "value": "measurements"
-            }
-          ]
-        },
-        {
-          "alias": "Node 36",
-          "groupBy": [
-            {
-              "params": [
-                "$__interval"
-              ],
-              "type": "time"
-            },
-            {
-              "params": [
-                "null"
-              ],
-              "type": "fill"
-            }
-          ],
-          "measurement": "mqtt_consumer",
-          "orderByTime": "ASC",
-          "policy": "default",
-          "refId": "E",
-          "resultFormat": "time_series",
-          "select": [
-            [
-              {
-                "params": [
-                  "reactive_percentage_34"
+                  "reactive_percentage_5"
                 ],
                 "type": "field"
               },
@@ -1239,12 +1104,12 @@
       ],
       "timeFrom": null,
       "timeShift": null,
-      "title": "Reactive Power Residual (W)",
+      "title": "Reactive Power Residual (p.u.)",
       "transformations": [],
       "type": "bargauge"
     },
     {
-      "datasource": "voltage-control",
+      "datasource": "InfluxDB",
       "fieldConfig": {
         "defaults": {
           "custom": {},
@@ -1257,13 +1122,16 @@
               "type": 1
             }
           ],
-          "min": 0,
           "thresholds": {
             "mode": "absolute",
             "steps": [
               {
                 "color": "green",
                 "value": null
+              },
+              {
+                "color": "red",
+                "value": 0.01
               }
             ]
           }
@@ -1278,7 +1146,7 @@
       },
       "id": 6,
       "options": {
-        "displayMode": "gradient",
+        "displayMode": "basic",
         "orientation": "auto",
         "reduceOptions": {
           "calcs": [
@@ -1292,7 +1160,7 @@
       "pluginVersion": "7.1.5",
       "targets": [
         {
-          "alias": "Node 40",
+          "alias": "Node 8",
           "groupBy": [
             {
               "params": [
@@ -1316,7 +1184,7 @@
             [
               {
                 "params": [
-                  "pv_input_measurements_38"
+                  "active_power_control_dict_8"
                 ],
                 "type": "field"
               },
@@ -1335,7 +1203,7 @@
           ]
         },
         {
-          "alias": "Node 39",
+          "alias": "Node 7",
           "groupBy": [
             {
               "params": [
@@ -1359,7 +1227,7 @@
             [
               {
                 "params": [
-                  "pv_input_measurements_37"
+                  "active_power_control_dict_7"
                 ],
                 "type": "field"
               },
@@ -1378,7 +1246,7 @@
           ]
         },
         {
-          "alias": "Node 38",
+          "alias": "Node 6",
           "groupBy": [
             {
               "params": [
@@ -1402,7 +1270,7 @@
             [
               {
                 "params": [
-                  "pv_input_measurements_36"
+                  "active_power_control_dict_6"
                 ],
                 "type": "field"
               },
@@ -1421,7 +1289,7 @@
           ]
         },
         {
-          "alias": "Node 37",
+          "alias": "Node 5",
           "groupBy": [
             {
               "params": [
@@ -1445,50 +1313,7 @@
             [
               {
                 "params": [
-                  "pv_input_measurements_35"
-                ],
-                "type": "field"
-              },
-              {
-                "params": [],
-                "type": "mean"
-              }
-            ]
-          ],
-          "tags": [
-            {
-              "key": "topic",
-              "operator": "=",
-              "value": "measurements"
-            }
-          ]
-        },
-        {
-          "alias": "Node 36",
-          "groupBy": [
-            {
-              "params": [
-                "$__interval"
-              ],
-              "type": "time"
-            },
-            {
-              "params": [
-                "null"
-              ],
-              "type": "fill"
-            }
-          ],
-          "measurement": "mqtt_consumer",
-          "orderByTime": "ASC",
-          "policy": "default",
-          "refId": "E",
-          "resultFormat": "time_series",
-          "select": [
-            [
-              {
-                "params": [
-                  "pv_input_measurements_34"
+                  "active_power_control_dict_5"
                 ],
                 "type": "field"
               },
@@ -1509,7 +1334,7 @@
       ],
       "timeFrom": null,
       "timeShift": null,
-      "title": "Active Power PV (W)",
+      "title": "Active Power PV (p.u.)",
       "type": "bargauge"
     }
   ],
@@ -1541,5 +1366,5 @@
   "timezone": "",
   "title": "covee-dashboard",
   "uid": "MUk5wL8G2",
-  "version": 4
+  "version": 8
 }

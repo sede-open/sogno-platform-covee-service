@@ -25,7 +25,7 @@ services:
     covee-powerflow:
         extends:
             file: docker-compose.yml
-            service: powerflow
+            service: covee-powerflow
         environment:
             - "MQTT_ENABLED=true"
             - "MQTTURL=fry.acs-lab.eonerc.rwth-aachen.de"

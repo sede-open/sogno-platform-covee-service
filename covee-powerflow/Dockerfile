@@ -8,6 +8,10 @@ RUN apt-get update -y \
     && apt-get install python3-venv -y \
     && apt-get install sudo -y 
 
-COPY conf.json ./
-COPY cases ./cases
+# ENV VIRTUAL_ENV=/opt/venv
+# RUN python3 -m virtualenv --python=/usr/bin/python3 $VIRTUAL_ENV
+# ENV PATH="$VIRTUAL_ENV/bin:$PATH"
+EXPOSE 1883
 
+COPY setup/requirements_docker.txt .
+RUN pip3 install -r requirements_docker.txt

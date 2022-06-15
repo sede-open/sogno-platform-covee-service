@@ -7,6 +7,3 @@
 [submodule "covee"]
 	path = covee
 	url = git@github.com:RWTH-ACS/covee.git
-[submodule "covee-powerflow"]
-	path = covee-powerflow
-	url = git@github.com:RWTH-ACS/covee-powerflow.git

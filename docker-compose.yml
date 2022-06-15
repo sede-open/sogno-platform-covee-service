@@ -1,15 +1,15 @@
 version: '2'
 
 services:
-  # grafana:
-  #   image: grafana/grafana:7.1.5
-  #   volumes:
-  #     - ./grafana/config/custom.ini:/etc/grafana/grafana.ini
-  #   ports:
-  #     - 3000:3000
-  #   environment:
-  #     - "GF_DASHBOARDS_MIN_REFRESH_INTERVALS=1s"
-  #     - "GF_INSTALL_PLUGINS=grafana-clock-panel,grafana-simple-json-datasource"
+  grafana:
+    image: grafana/grafana:7.1.5
+    volumes:
+      - ./grafana/config/custom.ini:/etc/grafana/grafana.ini
+    ports:
+      - 3000:3000
+    environment:
+      - "GF_DASHBOARDS_MIN_REFRESH_INTERVALS=1s"
+      - "GF_INSTALL_PLUGINS=grafana-clock-panel,grafana-simple-json-datasource"
   covee-powerflow:
     build:
       context: '.'
@@ -19,10 +19,11 @@ services:
     command: bash -c "cd covee-powerflow && 
                       make init &&
                       cd .. &&
-                      /covee-powerflow/powerflow/bin/python3 /covee-powerflow/runPF.py --ext_port 7070"
+                      /covee-powerflow/powerflow/bin/python3 /covee-powerflow/runPF.py"
     command:          tail -F dfsdfökdslk
     ports:
       - 7070:8000
+    
   covee:
     build:
       context: '.'
@@ -32,7 +33,7 @@ services:
     command: bash -c "cd covee &&  
                       make init &&
                       cd .. &&
-                      /covee/covee/bin/python3 /covee/Control_main.py --ext_port 7071"
+                      /covee/covee/bin/python3 /covee/Control_main.py"
     command:          tail -F dfsdfödslk
     ports:
       - 7071:8000
@@ -43,20 +44,20 @@ services:
       - "1883:1883"
       - "9001:9001"
 
-  # influxdb:
-  #   image: influxdb:latest
-  #   restart: unless-stopped
-  #   ports:
-  #     - 8086:8086
-  #   environment:
-  #     - "INFLUXDB_REPORTING_DISABLED=true"
-  #   volumes:
-  #     - ./covee-powerflow/influxdb/data/:/var/lib/influxdb
+  influxdb:
+    image: influxdb:latest
+    restart: unless-stopped
+    ports:
+      - 8086:8086
+    environment:
+      - "INFLUXDB_REPORTING_DISABLED=true"
+    volumes:
+      - ./covee-powerflow/influxdb/data/:/var/lib/influxdb
 
-  # telegraf:
-  #   image: telegraf:1.10.4
-  #   depends_on:
-  #     - influxdb
-  #     - mqtt
-  #   volumes:
-  #     - ./covee-powerflow/telegraf/telegraf.conf:/etc/telegraf/telegraf.conf:ro
+  telegraf:
+    image: telegraf:1.10.4
+    depends_on:
+      - influxdb
+      - mqtt
+    volumes:
+      - ./covee-powerflow/telegraf/telegraf.conf:/etc/telegraf/telegraf.conf:ro

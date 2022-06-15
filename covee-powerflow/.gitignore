@@ -1,4 +1,5 @@
 __pycache__/
+covee/
 *.egg-info/
 .vscode/
 *.pyc
@@ -11,12 +12,17 @@ __pycache__
 .idea
 .vscode
 csv_files/*.csv
+csv_files/Plot.py
+*.eps
+*.png
 *.idea
 *.vscode/
 *.ipynb_checkpoints/
 csv_files/results/
-csv_files/plots/
+plots/
+powerflow/powerflow
 pv_centralized/covee
 venv_ext
-*.eps
-*.png
+powerflow
+influxdb
+
