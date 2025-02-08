@@ -1,6 +1,7 @@
 FROM ubuntu:18.04
+FROM python:3.11.2
 
-MAINTAINER Edoardo De Din ededin@eonerc.rwth-aachen.de
+LABEL author="Edoardo De Din ededin@eonerc.rwth-aachen.de"
 
 RUN apt-get update -y \
     && apt-get install build-essential -y \

@@ -5,10 +5,9 @@ services:
     image: grafana/grafana
     volumes:
       - ./grafana/config/custom.ini:/etc/grafana/grafana.ini
+    command: bash -c "grafana-cli plugins install grafana-clock-panel && grafana-cli plugins install grafana-simple-json-datasource"
     ports:
       - 3000:3000
-    environment:
-      - "GF_INSTALL_PLUGINS=grafana-clock-panel,grafana-simple-json-datasource"
   covee-powerflow:
     build:
       context: '.'
@@ -19,7 +18,7 @@ services:
                       make init &&
                       cd .. &&
                       /covee-powerflow/powerflow/bin/python3 /covee-powerflow/runPF.py --ext_port 7070"
-    command:          tail -F dfsdfökdslk
+    #command:          tail -F dfsdfökdslk
     ports:
       - 7070:8000
   covee:
@@ -32,7 +31,7 @@ services:
                       make init &&
                       cd .. &&
                       /covee/covee/bin/python3 /covee/Control_main.py --ext_port 7071"
-    command:          tail -F dfsdfödslk
+    #command:          tail -F dfsdfödslk
     ports:
       - 7071:8000
 
