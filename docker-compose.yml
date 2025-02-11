@@ -16,8 +16,8 @@ services:
       - ./covee-powerflow:/covee-powerflow
     command: bash -c "cd covee-powerflow && 
                       make init &&
-                      cd .. &&
-                      /covee-powerflow/powerflow/bin/python3 /covee-powerflow/runPF.py --ext_port 7070"
+                      source powerflow/bin/activate &&
+                      python runPF.py --ext_port 7070"
     #command:          tail -F dfsdfökdslk
     ports:
       - 7070:8000
@@ -29,8 +29,8 @@ services:
       - ./covee:/covee
     command: bash -c "cd covee &&  
                       make init &&
-                      cd .. &&
-                      /covee/covee/bin/python3 /covee/Control_main.py --ext_port 7071"
+                      source covee/bin/activate &&
+                      python Control_main.py --ext_port 7071"
     #command:          tail -F dfsdfödslk
     ports:
       - 7071:8000
