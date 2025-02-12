@@ -1,12 +1,12 @@
 [submodule "data"]
 	path = data
-	url = git@git.rwth-aachen.de:acs/public/automation/covee/covee-control-data.git
+	url = https://git.rwth-aachen.de/acs/public/automation/covee/covee-control-data.git
 [submodule "pv_centralized/submodules/dmu"]
 	path = pv_centralized/submodules/dmu
-	url = git@git.rwth-aachen.de:acs/public/automation/modules/dmu.git
+	url = https://git.rwth-aachen.de/acs/public/automation/modules/dmu.git
 [submodule "covee"]
 	path = covee
-	url = git@github.com:RWTH-ACS/covee.git
+	url = https://github.com/sogno-platform/covee/tree/c53e40c73c44a0a93f6f8360ab75c12b36216c5b
 [submodule "covee-powerflow"]
 	path = covee-powerflow
-	url = git@github.com:RWTH-ACS/covee-powerflow.git
+	url = https://github.com/sogno-platform/covee-powerflow/tree/23f01efce3d9a0614d803a1d6cee624f5f874da4
